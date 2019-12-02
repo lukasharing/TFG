@@ -1,3 +1,6 @@
+Plantilla utilizada:
+https://github.com/JJ/plantilla-TFG-ETSIIT
+
 # TFG (Gráficos sin vértices?)
 ## Lukas Häring García
 
