@@ -1,5 +1,7 @@
-# TFG (Gráficos sin vértices?)
-## Lukas Häring García
+# Trabajo de Fin de Grado: Funciones de distancia con signo
+
+### Autor(a): Lukas Häring García
+### Tutor(a)(es): Juan Carlos Torres Cantero
 
 <ol>
     <li>Resumen</li>
