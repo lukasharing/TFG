@@ -1,0 +1,35 @@
+\chapter{Preliminares}
+
+
+% https://it.wikipedia.org/wiki/Isosuperficie#cite_note-:2-3
+\section{Funciones de distancia con signo}
+
+Como su propio nombre indica, se trata de una función multi-dimensional 
+\[f(x_1,\cdots,x_n)=d \mid d \in \mathbb{R}\]
+Dado un punto \((z_1,\cdots,z_n)\), el valor que tomará \(f(z_1,\cdots,z_n)\) será la distancia signada $\pm d$ desde el punto a la superficie más cercana.\\\\
+El signo de esta distancia contiene información sobre la escena. Si la distancia es positiva, nos encontramos en el exterior de una figura. Cuando esta es cero, nos encontraremos en la superficie (corteza). Por último, si la distancia es negativa, estaremos dentro de la figura.\\\\
+La distancia es negativa, cuando tratamos de una \textit{superficie cerrada}. La distancia en positivo representa la profundidad del punto respecto de la superficie (corteza). 
+
+\begin{definition}
+	Sea \(f(x_1, \cdots, x_n)\) una función de distancia con signo, definimos como \textit{isosuperficie} \(S\) al conjunto de puntos tales que \(f(x_1, \cdots, x_n) = 0\)
+\end{definition}
+
+
+
+\section{Normal de un campo escalar}
+
+Dada una superficie sobre una función de distancia \(f(x, y, z)=d=0\)
+
+% https://tutorial.math.lamar.edu/classes/calciii/gradientvectortangentplane.aspx
+\begin{theorem}
+	El vector gradiente \(\nabla f(x_0, y_0, z_0)\)  es ortogonal a las superficies de nivel \(f(x, y, z)=k\) en el punto \((x_0, y_0, z_0)\).
+\end{theorem}
+
+\begin{proof}
+	Dada una superficie de nivel \(f(x, y, z)=k\), el plano tangente en un punto \((x_0, y_0, z_0)\) está definido por,
+	$$f_x(x_0, y_0, z_0)(x - x_0)+f_y(x_0, y_0, z_0)(y - y_0)+f_z(x_0, y_0, z_0)(z - z_0)$$
+\end{proof}
+
+
+Esta propiedad es fundamental para el desarrollo de la técnica. Ya que, ofrecerá las normales de los objetos (superficies) que serán utilizadas para una gran variedad de casos, por ejemplo, iluminación.
+
