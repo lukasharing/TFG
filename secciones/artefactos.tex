@@ -7,10 +7,10 @@ El término sobreestimar lo definimos como superar la distancia mínima real a l
 
 \begin{figure}[H]
   \centering
-  \subfloat[Estima dentro de la superficie]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sobreestimar-interior.jpeg}\label{fig:estima_dentro}}
+  \subfloat[Estima dentro de la superficie]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/estimation/sobreestimar-interior.png}\label{fig:estima_dentro}}
   \hfill
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Estima fuera de la superficie]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sobreestimar-exterior.jpeg}\label{fig:estima_fuera}}
+  \subfloat[Estima fuera de la superficie]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/estimation/sobreestimar-exterior.png}\label{fig:estima_fuera}}
   \caption{Dos formas de sobreestimar una superficie}
 \end{figure}
 
@@ -38,14 +38,14 @@ float SphereMarching(
     return MAXIMO;
 }
 \end{lstlisting}
-Veamos el efecto que implica este cambio sobre la deformación vista en \fullref{fig:deform}.
+Veamos el efecto que implica este cambio sobre la deformación vista en \fullref{fig:twist}.
 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[\textit{Marcher} orginal]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf_twist.jpeg}\label{fig:twistoriginal}}
+  \subfloat[\textit{Marcher} orginal]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf/3d/sdf_twist.png}\label{fig:twistoriginal}}
   \hfill
-  \subfloat[\textit{Marcher} sin sobreestimación en el interior]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sin_sobreestimacion_interior.jpeg}\label{fig:stimateext}}
+  \subfloat[\textit{Marcher} sin sobreestimación en el interior]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf/3d/sin_sobreestimacion_interior.png}\label{fig:stimateext}}
   \caption{Comparativa de los cambios realizados en el \textit{Marcher}. A la izquierda, el \textit{Marcher} original, a la derecha, el marcher con \(\vert d_{n+1}\vert < \epsilon\)}
 \end{figure}
 
@@ -82,11 +82,11 @@ Veamos como afecta el factor \(k\) al trazado de la escena por el \textit{Marche
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[k=1.0]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/sin_sobreestimacion_interior.jpeg}\label{fig:twistoriginal1}}
+  \subfloat[k=1.0]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/sdf/3d/sin_sobreestimacion_interior.png}\label{fig:twistoriginal1}}
   \hfill
-  \subfloat[k=0.75]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/sobreestimacion_75.jpeg}\label{fig:twist75}}
+  \subfloat[k=0.75]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/sdf/3d/sobreestimacion_75.png}\label{fig:twist75}}
   \hfill
-  \subfloat[k=0.50]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/sobreestimacion_50.jpeg}\label{fig:twist50}}
+  \subfloat[k=0.50]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/sdf/3d/sobreestimacion_50.png}\label{fig:twist50}}
   \caption{\(k\in\{1, 0.75, 0.5\}\) respectivamente sobre el \textit{Marcher} anterior}
 \end{figure}
 
@@ -99,7 +99,7 @@ Esto ocurre cuando el \textit{Marcher} ha acabado y la distancia recorrida por e
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/subestimacion.jpeg}\label{fig:subestimacion}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/estimation/subestimacion.png}\label{fig:subestimacion}
   \caption{Ejemplo de subestimación de una superficie}
 \end{figure}
 

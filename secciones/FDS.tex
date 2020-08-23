@@ -48,7 +48,7 @@ float SDFCircunsferencia(vec2 p, float r){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_circunsferencia.jpeg}\label{fig:circ}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_circunsferencia.png}\label{fig:circ}
   \caption{Circunsferencia FDS radio \(0.3\)}
 \end{figure}
 
@@ -61,22 +61,22 @@ Una vez hecho esto, vamos a reducir el problema en 4 regiones.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_rect_calc.jpeg}\label{fig:subproblem}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/proofs/proof_rectangle.png}\label{fig:subproblem}
   \caption{División del rectángulo en 4 regiones o subproblemas.}
 \end{figure}
 Vamos a preservar la métrica euclídea suponiendo que se ha posicionado el punto \(\Vec{p}=\vert(x,y)\vert=(\vert x\vert, \vert y \vert)\) en cada una de las regiones.
 \begin{enumerate}
-    \item \textbf{Región 1}. Se trata de encontrar la distancia al lado derecho, esto es sencillo, bastaría con hacer \(\nabla x=\vert x\vert-w'\).
-    \item \textbf{Región 2}. De manera similar al anterior, la distancia al lado superior, será \(\nabla y=\vert y\vert-h'\).
+    \item \textbf{Región 1}. Se trata de encontrar la distancia al lado derecho, esto es sencillo, bastaría con hacer \(\Delta x=\vert x\vert-w'\).
+    \item \textbf{Región 2}. De manera similar al anterior, la distancia al lado superior, será \(\Delta y=\vert y\vert-h'\).
     \item \textbf{Región 3}. En esta región vamos a calcular la distancia a la esquina del rectángulo, \(\vert\vert \vert\Vec{p}\vert-\Vec{s'}\vert\vert = \sqrt{\left(\vert x\vert-w'\right)^2+\left(\vert y\vert-h'\right)^2}\).
     \item \textbf{Región 4}. Esta región puede considerarse la más difícil de calcular, debemos utilizar el mismo cálculo que el utilizado para los lados, pero nos quedaremos con la distancia máxima del cálculo, ya que esta es negativa, al estar en el interior de la figura. Deberá anularse la componente cuanto este cálculo sea positivo, es decir, esté en la \textbf{Región 1, 2}.
     \[argmax(\Vec{a})=min(max(\Vec{a}_x, \Vec{a}_y), 0)\]
     Por lo que la distancia interior, será \(argmax(\vert\Vec{p}\vert-\Vec{s'})\).
 \end{enumerate}
 
-Podríamos crear una función a trozos, definida mediante diferentes \textit{ifs} para cada una de las regiones, pero queremos que además de ser exacta, sea eficiente, por lo que vamos a mirar en que relación tienen las diferentes regiones según la posición del punto. Es importante observar que la \textbf{Región 3} contiene en su ecuación a las \textbf{Regiónes 1,2}, por lo que deben existir casos particulares. Cuando \(\nabla \vert x\vert =\vert x\vert-w'=0\longrightarrow \sqrt{\left(\vert y\vert-h'\right)^2} = \vert y\vert-h'=\nabla \vert y\vert\), que concuerda con la \textbf{Región 2} en la recta \(y=h'\) pero cuando \(\nabla \vert x\vert < 0\), vemos que la componente \(y\) no queda isolada, para que esto ocurra, haremos \(\max\left(\nabla \vert x\vert, 0\right)\), haciendo que la \textbf{Región 2 y 3} queden unificadas. De manera equivalente para la \textbf{Región 1 y 3}, tenemos \(\max\left(\nabla \vert y\vert, 0\right)\), esto hace que la ecuación unificada para las \textbf{Regiones 1, 2 y 3} sea la siguiente,
+Podríamos crear una función a trozos, definida mediante diferentes \textit{ifs} para cada una de las regiones, pero queremos que además de ser exacta, sea eficiente, por lo que vamos a mirar en que relación tienen las diferentes regiones según la posición del punto. Es importante observar que la \textbf{Región 3} contiene en su ecuación a las \textbf{Regiónes 1,2}, por lo que deben existir casos particulares. Cuando \(\Delta \vert x\vert =\vert x\vert-w'=0\longrightarrow \sqrt{\left(\vert y\vert-h'\right)^2} = \vert y\vert-h'=\Delta \vert y\vert\), que concuerda con la \textbf{Región 2} en la recta \(y=h'\) pero cuando \(\Delta \vert x\vert < 0\), vemos que la componente \(y\) no queda isolada, para que esto ocurra, haremos \(\max\left(\Delta \vert x\vert, 0\right)\), haciendo que la \textbf{Región 2 y 3} queden unificadas. De manera equivalente para la \textbf{Región 1 y 3}, tenemos \(\max\left(\Delta \vert y\vert, 0\right)\), esto hace que la ecuación unificada para las \textbf{Regiones 1, 2 y 3} sea la siguiente,
 \[SDFRectangulo_{\Vec{s'}}(\Vec{p})\approx \vert\vert\max\left(\vert\Vec{p}\vert-\Vec{s'},0\right)\vert\vert\]
-Finalmente, no es difícil observar que \(\nabla\vert x\vert=\nabla\vert y\vert=0\) cuando nos encontramos en la \textbf{Región 4}, por lo que bastará sumar la distancia de esta región para obtener la ecuación exacta.
+Finalmente, no es difícil observar que \(\Delta\vert x\vert=\Delta\vert y\vert=0\) cuando nos encontramos en la \textbf{Región 4}, por lo que bastará sumar la distancia de esta región para obtener la ecuación exacta.
 \[SDFRectangulo_{\Vec{s'}}(\Vec{p})= \vert\vert\max\left(\vert\Vec{p}\vert-\Vec{s'},0\right)\vert\vert + argmax(\vert \Vec{p}\vert - {s'})\]
 \begin{lstlisting}
 // Rectángulo Exacto
@@ -88,7 +88,7 @@ float SDFRectangulo(vec2 p, vec2 s){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_rectangulo.jpeg}\label{fig:rectaangulo}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_rectangulo.png}\label{fig:rectaangulo}
   \caption{Rectángulo FDS de dimensiones \(\Vec{s'}=(0.4, 0.2)\)}
 \end{figure}
 
@@ -120,7 +120,7 @@ float SDFRecta(vec2 p, vec2 a, vec2 b){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_recta.jpeg}\label{fig:recta}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_recta.png}\label{fig:recta}
   \caption{FDS Recta que pasa por \(\Vec{a}=(0.2, 0.2), \Vec{b}=(0.0, 0.1)\)}
 \end{figure}
 
@@ -146,7 +146,7 @@ float SDFSegmento(vec2 p, vec2 a, vec2 b){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_segmento.jpeg}\label{fig:segmento}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_segmento.png}\label{fig:segmento}
   \caption{FDS Recta que pasa por \(\Vec{a}=(-0.2, -0.2), \Vec{b}=(0.3, 0.4)\)}
 \end{figure}
 
@@ -184,7 +184,7 @@ En el ejemplo anterior, hemos utilizado la resta para desplazar hacia la posici�
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_traslacion.jpeg}\label{fig:traslacion}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_traslacion.png}\label{fig:traslacion}
   \caption{Traslación FDS \(\Vec{t}=(0.1, 0.2)\)}
 \end{figure}
 
@@ -239,7 +239,7 @@ float escena_sdf(vec2 p){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_rotacion.jpeg}\label{fig:rotacion}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_rotacion.png}\label{fig:rotacion}
   \caption{Rectángulo (cuadrado) FDS con rotación \(\alpha=\dfrac{\pi}{4}\)}
 \end{figure}
 
@@ -282,7 +282,7 @@ float escena_sdf(vec2 p){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_simetria.jpeg}\label{fig:simetria}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_simetria.png}\label{fig:simetria}
   \caption{Simetría FDS ejemplos anteriores}
 \end{figure}
 
@@ -310,7 +310,7 @@ float escena_sdf(vec2 p){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_add.jpeg}\label{fig:add}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_add.png}\label{fig:add}
   \caption{ Adición de dos FDS de ejemplos anteriores}
 \end{figure}
 Se puede encadenar varias \textit{FDS} componiendo múltiples veces el operador \textit{min} sobre las distintas figuras. \\\\
@@ -322,7 +322,7 @@ Antes hemos visto que el operador \enquote{\(\min\)} combina dos \textit{FDS}. E
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_subtract-1.jpeg}\label{fig:disyunccion}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_subtract-1.png}\label{fig:disyunccion}
   \caption{ Disyunción de dos FDS de ejemplos anteriores}
 \end{figure}
 
@@ -331,7 +331,7 @@ Vemos que el operador funciona como \textit{and} en el diagrama de Venn. Pero en
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_subtract-2.jpeg}\label{fig:negative}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_subtract-2.png}\label{fig:negative}
   \caption{ Interior por Exterior Circunsferencia FDS}
 \end{figure}
 
@@ -356,7 +356,7 @@ float escena_sdf(vec2 p){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_subtract-3.jpeg}\label{fig:substraction}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_subtract-3.png}\label{fig:substraction}
   \caption{Substracción de una circunsferencia a un rectangulo FDS}
 \end{figure}
 
@@ -411,8 +411,8 @@ float escena_sdf(vec2 p){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_subtracted_scale.jpeg}\label{fig:substraction}
-  \caption{\fullref{fig:substraction_scaled} escalado \(k=0.5\)}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_subtracted_scale.png}\label{fig:substraction}
+  \caption{\fullref{fig:substraction} escalado \(k=0.5\)}
 \end{figure}
 
 \subsection{Operador de deformación sin exactitud}
@@ -438,7 +438,7 @@ El resultado de la deformación:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_deform.jpeg}\label{fig:deform}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/2d/sdf_deform.png}\label{fig:deform}
   \caption{Deformación del espacio de una circunsferencia FDS}
 \end{figure}
 
@@ -484,7 +484,7 @@ El resultado,
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_prisma_rect.jpeg}\label{fig:prisma}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_prisma_rect.png}\label{fig:prisma}
   \caption{Prisma Rectangular \(\Vec{s}=\Vec{0.3}\) rotado \(\alpha_{YZ}=\dfrac{\pi}{4}\) FDS}
 \end{figure}
 
@@ -526,7 +526,7 @@ El resultado,
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_plano.jpeg}\label{fig:plano}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_plano.png}\label{fig:plano}
   \caption{Plano \(\Vec{n}=(0,1,0)\) desplazado \(\Vec{t}=(0, -1, 0)\)}
 \end{figure}
 
@@ -560,9 +560,9 @@ float SDFSegmento(vec3 p, vec3 a, vec3 b){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Imagen original]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf_recta_3d.jpeg}\label{fig:recta3d}}
+  \subfloat[Imagen original]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf/3d/sdf_recta_3d.png}\label{fig:recta3d}}
   \hfill
-  \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf_segmento_3d.jpeg}\label{fig:segmento3d}}
+  \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf/3d/sdf_segmento_3d.png}\label{fig:segmento3d}}
   \caption{Recta y Segmento Exacto \(\Vec{a}=\Vec{0}\), \(\Vec{b}=\Vec{0.5}\) SDF}
 \end{figure}
 
@@ -620,7 +620,7 @@ El resultado es el siguiente,
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_capsula.jpeg}\label{fig:capsula}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_capsula.png}\label{fig:capsula}
   \caption{Segmento ensanchado exacto FDS}
 \end{figure}
 
@@ -630,8 +630,8 @@ Podemos observar que este operador devuelve una figura ensanchada con los bordes
 El primer operador es muy importante ya que nos va a permitir generar más funciones exactas utilizando las \textit{funciones de distancia con signo} de una dimensión inferior. El resultado de este operador es una figura generada por el giro sobre un eje de la figura plana.\\\\
 Calculamos  
 
-Vamos a calcular la distancia positiva al isoperímetro, dado el plano \(\overline{AB}\) sobre el que está la figura \(f:\mathbb{R}^2\longrightarrow\mathbb{R}\) y dado un punto \(\Vec{p}\in\mathbb{R}^3\) sobre la escena, la proyección de \(\Vec{p}\) sobre el plano \(\overline{AB}\) será \(\Vec{p}_{a,b}\) con \(c\) como coordenada independiente y cuya distancia de la proyección al isoperímetro será \(f(\Vec{p}_{a,b})\), por definición. Si \(\nabla h=(c-0)\) es la altura respecto de \(\Vec{p}\) sobre el plano \(\overline{AB}\), se crea un triángulo equilátero de lados \(\nabla h\) y \( f(\Vec{a,b})\) (Obsérvese la figura \fullref{fig:proof_rev}) y la distancia \Vec{p} hasta el isperímetro de la figura sobre el plano será la diagonal del triángulo formado.
-\[\text{distancia}_{\overline{AB}}(\Vec{p}, f)= \sqrt{(\nabla h)^2+(f(\Vec{p}_{a,b}))^2}=\vert\vert(c, f(\Vec{p}_{a,b})\vert\vert\]
+Vamos a calcular la distancia positiva al isoperímetro, dado el plano \(\overline{AB}\) sobre el que está la figura \(f:\mathbb{R}^2\longrightarrow\mathbb{R}\) y dado un punto \(\Vec{p}\in\mathbb{R}^3\) sobre la escena, la proyección de \(\Vec{p}\) sobre el plano \(\overline{AB}\) será \(\Vec{p}_{a,b}\) con \(c\) como coordenada independiente y cuya distancia de la proyección al isoperímetro será \(f(\Vec{p}_{a,b})\), por definición. Si \(\Delta h=(c-0)\) es la altura respecto de \(\Vec{p}\) sobre el plano \(\overline{AB}\), se crea un triángulo equilátero de lados \(\Delta h\) y \( f(\Vec{a,b})\) (Obsérvese la figura \fullref{fig:proof_rev}) y la distancia \Vec{p} hasta el isperímetro de la figura sobre el plano será la diagonal del triángulo formado.
+\[\text{distancia}_{\overline{AB}}(\Vec{p}, f)= \sqrt{(\Delta h)^2+(f(\Vec{p}_{a,b}))^2}=\vert\vert(c, f(\Vec{p}_{a,b})\vert\vert\]
 
 Podemos utilizar esta técnica para ensanchar también el isoperímetro trazado para la revolución:
 
@@ -663,7 +663,7 @@ Dividimos el ejercicio en dos subproblemas, por encima de la tapa \(\Delta c \ge
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.7\textwidth]{secciones/imagenes/proof_2.jpeg}\label{fig:capsula}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/proofs/proof_extrussion.png}\label{fig:capsula}
   \caption{Visualización de una extrusión genérica}
 \end{figure}
 
@@ -717,9 +717,9 @@ Los resultados de las funciones con y sin tapa:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Cilindro sin tapa]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf_cilindro_infinito.jpeg}\label{fig:cilindro_tapa}}
+  \subfloat[Cilindro sin tapa]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf/3d/sdf_cilindro_infinito.png}\label{fig:cilindro_inf}}
   \hfill
-  \subfloat[Cilindro con tapa]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf_cilindro.jpeg}\label{fig:segmento3d}}
+  \subfloat[Cilindro con tapa]{\includegraphics[width=0.4\textwidth]{secciones/imagenes/sdf/3d/sdf_cilindro.png}\label{fig:cilindro_tapa}}
   \caption{Cilindro con \(r=0.2\) y \(h'=0.3\)  FDS}
 \end{figure}
 
@@ -739,7 +739,7 @@ El resultado de la agregación:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_add_3d.jpeg}\label{fig:add3d}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_add_3d.png}\label{fig:add3d}
   \caption{Agregación de dos esferas \(r=0.3\) y una trasladada}
 \end{figure}
 
@@ -763,7 +763,7 @@ Se trata de una sección del eje \(\Vec{z}\), además, se ha aplicado el operado
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_seccion_3d.jpeg}\label{fig:seccion}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_seccion_3d.png}\label{fig:seccion}
   \caption{Una esfera \(r=0.3\) seccionada por un plano \(\Vec{n}=(0,0,-1)\) desplazado}
 \end{figure}
 
@@ -787,7 +787,7 @@ El resultado será una esfera en el centro a la que se le ha carvado otra esfera
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_substract_3d.jpeg}\label{fig:sub3d}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_substract_3d.png}\label{fig:sub3d}
   \caption{Dos esferas \(r=0.3\) y substracción de la trasladada}
 \end{figure}
 
@@ -827,7 +827,7 @@ El resultado obtenido es el siguiente:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf_twist.jpeg}\label{fig:twist}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/3d/sdf_twist.png}\label{fig:twist}
   \caption{Deformación torsión de un cubo \(\Vec{l}=\Vec{0.2}\)}
 \end{figure}
 
