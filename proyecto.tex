@@ -4,20 +4,31 @@
 % Original author:  Frits Wenneker (http://www.howtotex.com)
 % License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % \documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
 \documentclass[
 	12pt,
 	a4paper,
 	english,
-	spanish
+	spanish,
+	dvipsnames,
+    %footinclude,
+    headinclude,
 ]{scrbook}
 
 % Images
+\usepackage{subfig}
 \usepackage{eso-pic}
+\newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}}
+
+% Tablas
+\usepackage{tabularx}
+
+% Comillas
+\usepackage{csquotes}
 
 % Idioma
-\usepackage[es-noindentfirst, es-lcroman, es-tabla]{babel}
+\usepackage[spanish]{babel}
+%\usepackage{listingsutf8} % Codigo
 %\spanishdashitems
 
 % Titulo
@@ -25,11 +36,11 @@
 drafting=false,
 dottedtoc=true,
 parts,
-pdfspacing,
+pdfspacing=true,
 beramono=false,
 palatino=false,
 %
-floatperchapter=false,
+floatperchapter=true,
 linedheaders=true,
 listings=false
 ]{notsoclassicthesis}
@@ -38,10 +49,15 @@ listings=false
 %\renewfontface\chapterNumber[Scale=7, Color=000000]{EBGaramond}
 %\setmonofont[Scale=0.75]{Go Mono}
 
+% Gráficos
+\usepackage{tikz}
+\usepackage{pgfplots}
+
 % Matemáticas
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{mathtools}
 \usepackage{commath}
+\usepackage{scalerel}
 
 % Teorema
 \newtheoremstyle{theorem-style}  % Nombre del estilo
@@ -76,7 +92,6 @@ listings=false
 \newtheorem{notation}[theorem]{Notación}
 \newtheorem{exercise}[theorem]{Ejercicio}
 
-
 % Listas
 \usepackage[inline]{enumitem}
 \setlist[itemize]{ noitemsep, leftmargin=*}
@@ -84,24 +99,36 @@ listings=false
 
 % Posicionamiento
 \usepackage{float}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage{pbox}
 
 % Código
 \usepackage{listings}
 \lstset{
-	basicstyle=\ttfamily,%
+    basicstyle=\ttfamily,
+    extendedchars=true,
+    inputencoding=utf8,
 	breaklines=true,%
-	captionpos=b,                    % sets the caption-position to bottom
-	tabsize=2,	                   % sets default tabsize to 2 spaces
-	frame=none,
-	numbers=left,
-	xleftmargin=18pt,
-	stepnumber=1,
-	aboveskip=12pt,
+	captionpos=b,
+	tabsize=1
+	showtabs=false,
 	showstringspaces=false,
+	language=C,
+	numbers=left,
+	xleftmargin=0pt,
+	stepnumber=1,
+	aboveskip=5pt,
 	keywordstyle=\bfseries,
-	commentstyle=\itshape,
+	commentstyle=\color{OliveGreen}\itshape,
 	numberstyle=\scriptsize\bfseries,
 	morekeywords={sage},
+	literate=
+        {á}{{\'a}}1
+        {é}{{\'e}}1
+        {í}{{\'i}}1
+        {ó}{{\'o}}1
+        {ú}{{\'u}}1
+        {ñ}{{\~n}}1
 }
 \renewcommand{\lstlistingname}{Listado}
 
@@ -134,46 +161,32 @@ listings=false
 	%\listoftables 
 	%\newpage
 
-	% Introducción 
+	% Introduccion
+	\input{secciones/introduccion}
+	
+	% Preliminares 
 	\input{secciones/preliminares}
 
-	% Descripción del problema y hasta donde se llega
-	\input{secciones/02_descripcion}
+	% Lenguaje
+	\input{secciones/codigo}
 
-	% Estado del arte
-	% 	1. Crítica al estado del arte
-	% 	2. Propuesta
-	\input{secciones/03_estado_del_arte}
+	% Marcher
+	\input{secciones/marcher}
 	
-	\input{secciones/04_planificacion}
+	% Iluminacion
+	\input{secciones/iluminacion}
 
-	% Análisis del problema
-	% 1. Análisis de requisitos
-	% 2. Análisis de las soluciones
-	% 3. Solucion propuesta
-	% 4. Análisis de seguridad
-	\input{secciones/05_analisis}
-
-	% Desarrollo bajo sprints: 
-	% 	1. Permitir registros y login de usuarios
-	% 	2. Desarrollo del sistema de incidencias
-	% 	3. Desarrollo del sistema de denuncias administrativas y accidentes
-	% 	4. Desarrollo del sistema de croquis
-	%   5. Instalación de la aplicación de manera automática
-	\input{secciones/06_implementacion}
-
-	% Presupuesto
-
-	% Conclusiones
-	\input{secciones/07_conclusiones}
-
-	% Trabajos futuros
-
-
+    % Funciones de Distancia con Signo
+	\input{secciones/FDS}
+	
+	% Artefactos
+	\input{secciones/artefactos}
+	
+	% Materiales
+	\input{secciones/materiales}
 	
 	\newpage
 	\bibliography{bibliografia}
 	\bibliographystyle{plain}
 	
 \end{document}
-

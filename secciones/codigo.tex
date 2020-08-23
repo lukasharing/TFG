@@ -1,0 +1,231 @@
+\chapter{Lenguaje GLSL}
+% https://www.khronos.org/registry/OpenGL/specs/gl/GLSLangSpec.4.40.pdf
+Vamos a presentar el lenguaje que se ha elegido. El lenguaje \textit{OpenGL Shading Language} (\textit{GLSL}) tiene una sintaxis similar a C\footnote{En su definición, se utilizó como referencia C ya que ....}. Se ha escogido debido a que es y ha sido uno de los lenguajes más utilizados la última década % Poner Referencia
+. Aún así, han aparecido nuevos lenguajes de programación de shaders, como por ejemplo, Vulkan.\\\\
+Vamos a ignorar el proceso de creación de escena con OpenGL, ya que utilizaremos la plataforma \textit{Shadertoy}\footnote{Fue creado por Inigo Quilez}, que nos crea un entorno adecuado para desarrollar nuestro trabajo. \textit{Shadertoy}, tiene construido por detrás, una escena con una superficie formada por 4 vértices, con dos triángulos. La cámara de la escena, con proyección ortogonal y cuyo viewport concuerda con los cuatro vértices.\\\\
+A esta superficie se le va a asignar una textura, que como bien sabemos, las coordenadas de la textura \((u,v)\) están normalizadas. Es decir, vamos a trabajar sobre una textura, o shader y así crear una sub-escena. Para cada texel, utilizaremos un \textit{Marcher}, que estimará la escena. Cada elemento de la escena recibirá un material y una textura. Se calcularán las normales de los objetos que, junto al modelo de iluminación, crearemos una escena más viva.
+\section{Tipos de GLSL}
+Como ya hemos dicho, tiene una sintaxis similar a C, aunque añade y elimina ciertos tipos.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Tipo & Definición\\
+      \midrule
+      int & Entero con signo, igual que en C\\
+      float & Número real como en C, aunque no existe el tipo \textit{double}. \\
+      bool & Igual que en C++, tiene dos valores y ocupa un byte. \\
+      vecN & Se trata de un nuevo tipo, vector matemático, es decir, n-upla de floats, están definidos: vec2, vec3, vec4. \\
+      matN & Se trata de una matriz cuadrada de floats, tenemos definidos: mat2, mat3, mat4. \\
+      matNxM & Una matriz rectangular de dimensiones \(N\times M\), encontramos: mat2x2, mat2x3, mat2x4, mat3x2, mat3x3, mat3x4, mat4x2, mat4x3, mat4x4. \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+\newpage
+% Vectores GLSL
+\section{Vectores en GLSL}
+El tipo \textit{vector}, definido por una n-úpla \((x, y, z, w)\) ó \((r, g, b, a)\), nos será esencial para la creación de nuestros algoritmos. Utilizaremos el operador ".", para acceder y crear vectores a partir de las componentes descritas anteriormente, sin combinar.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Accesos & Definición\\
+      \midrule
+      vector.x & Devuelve un flotante con valor de la primera componente de la variable vector.\\
+      vector.yx & Devuelve un vector bidimensional donde la primera componente tiene el valor de \(y\) y la segunda componente, el valor de \(x\). \\
+      vector.rrrr & Devuelve un \textit{vec4} donde las compontentes son iguales a la primera componente del vector. \\
+      vector.rx & No compilará, ya que no se permite mezclar. \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+\\
+El constructor de \textit{vec} nos va a ofrecer una riqueza semántica.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Constructores & Definición\\
+      \midrule
+      vecN(float, \(\cdots\), float) & \(N\) valores flotantes para cada componente.\\
+      vecN(vecM, float) & Asigna los primeros valores del vector los valores del segundo, donde \(M+1=N\) y el último atributo, el valor del elemento flotante. \\
+      vecN(float, vecM) & Asigna el último atributo, el valor del elemento flotante. Los restantes valores del vector, los valores del segundo con \(M+1=N\). \\
+      vecN(vecP, vecQ) & Los \(P\) primeros atributos del vector con \textit{vecP}, los Q restantes, del vector \textit{vecQ}. \\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+\\
+Algunos de los operadores presentes de forma nativa.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Función & Definición\\
+      \midrule
+      length(vecN vector) & Devuelve el módulo del vector.\\
+      distance(vecN p1, vecN p2) & Devuelve la distancia entre los extremos de los vectores. \\
+      normalize(vecN vector) & Devuelve el vector normalizado. \\
+      dot(vecN v1, vecN v2) & Devuelve el valor del \textbf{producto escalar} de ambos vectores. \\
+      cross(vecN v1, vecN v2) & Devuelve el vector resultante de realizar el \textbf{producto vectorial}. \\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+% Matrices
+\newpage
+\section{Matrices GLSL}
+Para realizar accesos a las componentes de las matrices \textit{mat}, vamos a utilizar el operador de acceso \([y][x]\), que es el mismo operador de acceso a las matrices en C.\\
+Veamos alguno de los constructores para la creación de estas matrices \textit{matNxM} y \textit{matN}.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Constructor & Definición\\
+      \midrule
+      matN(matM) & Submatriz cuadrada \(N\) superior izquierda de \textit{matM}.\\
+      matNxM(matQxP) & Submatriz \(NxM\) superior izquierda de \textit{matQxP}.\\
+      matN(float, \(\cdots\), float) & \(N^2\) valores flotantes.\\
+      matNxM(float, \(\cdots\), float) & \(N\times M\) valores flotantes. \\
+      matN(vecN,..., vecN) & Formado por \(N\) vectores \(N\)-dimensionales. \\
+      matNxM(vecM,..., vecM) & Formado por \(N\) vectores \(M\)-dimensionales. \\
+      \pbox{10cm}{
+      matN(\\
+      \tab[1cm]vecM,float,
+      \\\tab[1cm]...,
+      \\\tab[1cm] vecM, float
+      \\)
+      }& Formado por \(N\) vectores \((M - 1)\)-dimensionales y \(N\) valores flotantes. \\
+      \pbox{10cm}{
+      matNxM(\\
+      \tab[1cm]vecP,float,
+      \\\tab[1cm]...,
+      \\\tab[1cm]vecP,float
+      \\)
+      } & Formado por \(N\) vectores (M -1)-dimensionales y M valores flotantes. \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+\\
+No hemos visto todas las combinaciones posibles, pero sí, las más utilizadas. Estas combinaciones tienen que respetar siempre el tamaño de la matriz, pudiéndose intercalar vectores \textit{vecN} y valores flotantes.\\\\
+De la misma forma, vamos a ver alguno de los operadores entre matrices.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Función & Definición\\
+      \midrule
+      transpose(mat matrix) & Devuelve la matriz cuadrada traspuesta.\\
+      matrix1 * matrix2 & Devuelve el producto de matrices. \\
+      matrixCompMult(mat m1, mat m2) & Devuelve el producto de \textit{Hadamar} de matrices con la misma dimensión. \\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+\newpage
+\section{Operadores Matemáticos}
+Encontramos los operadores usuales \(+,-,*,/,\%\). Para los números enteros, los operadores binarios, \({<<, >>, \mid, \And, \string^}\). GLSL permite utilizar operadores de la clase \textit{Math.h} sobre los tipos \textit{float} y \textit{vecN}, que recibirán, a partir de ahora, el nombre de, \textit{genType}\footnote{Definido en el siguiente libro}. Sobre los tipos \textit{genType}, aplicará la función utilizada, componente a componente. Ayudando a tener un código más compacto y legible.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Función & Definición\\
+      \midrule
+      radians(genType var)& Devuelve la conversión de grados en radianes. \\
+      degrees(genType var) & Devuelve la conversión de radianes en grados. \\
+      sin(genType var) & Aplica la función \textit{seno} sobre la variable. \\
+      cos(genType var) & Aplica la función \textit{coseno} sobre la variable. \\
+      tan(genType var) & Aplica la función \textit{tangente} sobre la variable. \\
+      asin(genType var) & Aplica la función \textit{arco seno} sobre la variable. \\
+      acos(genType var) & Aplica la función \textit{arco coseno} sobre la variable. \\
+      atan(genType var) & Aplica la función \textit{arco tagente} sobre la variable. \\
+      \pbox{10cm}{
+      pow(\\
+      \tab[1cm]genType a,\\
+      \tab[1cm]genType b \\
+      )} & Calcula la primera variable elevada a la segunda. \\
+      exp(genType var) & Calcula el número \(e\) elevado a la variable. \\
+      exp2(genType var) & Calcula el número \(2\) elevado a la variable. \\
+      log(genType var) & Aplica la función logarítmica sobra la variable. \\
+      sqrt(genType var) & Aplica la raíz cuadrada sobre la variable. \\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+\\
+Veamos algunas de las equivalencias que resulta de utilizar los distintos tipos.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Ejemplo & Equivalencia\\
+      \midrule
+      exp(10.0) & exp(10.0)\\
+      cos(ve2(a, b)) & vec2(cos(a),cos(b))\\
+      pow(3.1415, -1.2) & pow(3.1415, -1.2) \\
+      pow(vec2(a,b), n) & Distintos tipos, no compila. \\
+      pow(vec2(a,b), vec2(c,d)) & vec2(pow(a, c),pow(b, d)) \\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+\newpage
+Hay otra serie de funciones que nos será muy útil para la creación de texturas, post-procesados, la creación de \textit{Funciones de Distancia con Signo}, etc. 
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Función & Definición\\
+      \midrule
+      abs(genType var) & Aplica la función valor absoluto sobre la variable.\\
+      sign(genType var) & Aplica la función signo sobre la variable.\\
+      floor(genType var) & Aplica la función de redondeo inferior sobre la variable.\\
+      round(genType var) & Aplica la función de redondeo normal sobre la variable.\\
+      fract(genType var) & Toma las partes fraccionales de la variable.\\
+      min(genType a, genType b) & Aplica la función mínimo sobre la variable.\\
+      max(genType a, genType b) & Aplica la función máximo sobre la variable.\\
+      \pbox{10cm}{
+      clamp(\\
+      \tab[0.5cm]genType v,\\
+      \tab[0.5cm](genType ó float) min, \\
+      \tab[0.5cm](genType ó float) max \\
+      )} & Aplica la función acotado inferior \textit{min} y superior \textit{max}, sobre la variable.\\
+      \pbox{10cm}{
+      mix(\\
+      \tab[0.5cm]genType a,\\
+      \tab[0.5cm]genType b, \\
+      \tab[0.5cm](genType ó float ó bool) h \\
+      )} & Define \textit{la función de mezcla con peso} sobre la variable.\\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+\\
+Veamos algunos ejemplos y sus equivalencias.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Ejemplo & Equivalencia\\
+      \midrule
+      min(ve2(a, b), ve2(c, d)) & ve2(min(a, c), min(b, d))\\
+      clamp(vec2(a,b), m, n) & vec2(clamp(a, m, n),clamp(b, m, n))\\
+      min(ve2(a, b), ve2(c, d)) & ve2(min(a, c), min(b, d))\\
+      \pbox{10cm}{
+      mix(\\
+      \tab[0.5cm]vec2(a,b),\\
+      \tab[0.5cm]vec2(c,d), \\
+      \tab[0.5cm]vec2(e,f)\\
+      )} & vec2(mix(a,c,e), mix(b,d,f)) \\
+      
+      \bottomrule
+    \end{tabularx}
+\end{table}
+\newpage
+Los operadores relacionales son los mismos que en el lenguaje C. Encontramos los operadores \(<, <=, >, >=, !, ==, !=\).
+\section{Acceso a Texturas}
+Desde \textit{Shadertoy}, podemos utilizar diferentes canales y seleccionar distinto tipos de archivos, en nuestro caso, utilizaremos aquellas que aparecen en la pestaña: "\textit{Texturas}". Una vez seleccionada una textura, podemos utilizar la variable de tipo \textit{sampler2D} con nombre \textit{iChannelN} como canal N-ésimo, para acceder a los valores del archivo.\\\\
+Existen las siguientes funciones que permiten obtener el color de un píxel de una variable tipo \textit{sampler2D} en las coordenadas de textura \((s,t)\), que se encuentran normalizados.
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Función & Definición\\
+      \midrule
+      \pbox{10cm}{
+      texture(\\
+      \tab[1cm]sampler2D iChannelN,\\
+      \tab[1cm]vec2 coord \\
+      )} & Devuelve un píxel \textit{vec4 rgba} en la coordenada noormalizada \textit{coord}. \\
+      \pbox{10cm}{
+      textureLod(\\
+      \tab[1cm]sampler2D iChannelN,\\
+      \tab[1cm]vec2 coord, \\
+      \tab[1cm]float lod, \\
+      )} & Devuelve un píxel \textit{vec4 rgba} en la coordenada noormalizada \textit{coord} con un nivel de detalle \textit{lod}. \\
+      \bottomrule
+    \end{tabularx}
+\end{table}
+
