@@ -7,7 +7,7 @@ Cuando tratamos \textit{funciones de distancia con signo no exactas}, utilizarem
 
 \begin{figure}[H]
   \centering
-  \subfloat[Se estima dentro de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sin_sobreestimacion_interior.png}\label{fig:estima_dentro}}
+  \subfloat[Se estima dentro de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sobreestimar-interior.png}\label{fig:estima_dentro}}
   \hfill
   \captionsetup{justification=centering}%,margin=2cm
   \subfloat[Se estima fuera de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sobreestimar-exterior.png}\label{fig:estima_fuera}}
@@ -50,6 +50,10 @@ Veamos el efecto que implica este cambio sobre la deformación vista en \fullref
   \subfloat[\textit{Marcher} sin sobreestimación en el interior]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sin_sobreestimacion_interior.png}\label{fig:stimateext}}
   \caption{Comparativa de los cambios realizados en el \textit{Marcher}. A la izquierda, el \textit{Marcher} original, a la derecha, el marcher con \(\vert d_{n+1}\vert < \epsilon\)}
 \end{figure}
+
+% https://www.shadertoy.com/view/ttsBDs
+% 
+
 \section{Sobreestimación fuera de la superficie}
 Este segundo caso ocurre cuando la deformación aplicada hace que el rayo atraviese la superficie, como ocurre en el ejemplo \textit{(B)}.
 Esta sobreestimación afecta considerablemente a la eficiencia del \textit{Marcher}. La solución es escalar en todo momento la bola trazada, obligando a que la bola deformada no pueda contener ningún punto, es decir, sobreestimar. Este cambio nos obligará a utilizar un mayor número de iteraciones, de forma proporcional, para alcanzar la superficie.
@@ -88,6 +92,8 @@ Veamos como afecta el factor \(k\) al trazado de la escena por el \textit{Marche
   \subfloat[k=0.50]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_50.png}\label{fig:twist50}}
   \caption{\(k\in\{1, 0.75, 0.5\}\) respectivamente sobre el \textit{Marcher} anterior}
 \end{figure}
+
+% https://www.shadertoy.com/view/3tBBRR
 
 %Vemos que la figura es \enquote{exacta} con \(k=0.5\) si observamos la esquina inferior izquierda de la tapadera. Este factor, o reducción de la esfera a la mitad, va a provocar que se requiera el doble de iteraciones para trazar una escena.
 

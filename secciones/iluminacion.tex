@@ -141,6 +141,9 @@ float ModeloIluminacion(vec3 direccion, vec3 p){
   \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/phong.png}\label{fig:phong}
   \caption{Modelo de Phong sobre la esfera con \(h_3\).}
 \end{figure}
+
+% https://www.shadertoy.com/view/wtlBWr
+
 \newpage
 \section{Sombras}
 Vamos a ver la técnica más sencilla para calcular las sombras, es importante mencionar que hablaremos únicamente de la \textit{umbra} de una la sombra, es decir, cuando la fuente de luz es ocluida completamente por una superficie. Haciendo que la luz no actue sobre la intensidad del punto.\\\\Una vez aproximado un punto \(p\) de la \textit{isosuperficie}, diremos que está en \textit{umbra}, si es ocluido por un objeto en dirección a la luz, o lo que es lo mismo, podemos utilizar el marcher desde \(\Vec{p}\) en dirección a la luz \(\Vec{l_i}\), cuyo plano trasero contiene a \(\Vec{l_i}\). Si este traza otro punto \(\Vec{q}\) en esa dirección, este estará en \textit{umbra}.\\\\
@@ -156,6 +159,9 @@ Vamos a crear un modelo de iluminación con \textbf{dos} luces, una radial y otr
   \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/sombra_dura.png}\label{fig:shadow}
   \caption{Modelo de iluminación y sombras sobre la escena definida.}
 \end{figure}
+
+% https://www.shadertoy.com/view/wtfBW8
+
 \newpage
 \begin{lstlisting}
 float SphereMarching(in vec3 ojo, in vec3 direccion, float distancia_plano){

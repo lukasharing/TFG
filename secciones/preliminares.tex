@@ -106,6 +106,8 @@ Vemos que los valores inferiores a \(0.6\) se transforman a valores próximos a 
   \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-right.png}\label{fig:black}}
   \caption{Aplicación de un homeomorfismo a una imagen de grises.}
 \end{figure}
+% https://www.shadertoy.com/view/wljfR1
+
 % Pie Define monico
 En el ejemplo anterior hemos visto un polinomio mónico\footnote{La definición de mónico se puede encontrar en el libro ""}, pero podemos utilizar cualquier otra función que cumpla con las restricciones. Aún así, es recomendable utilizar polinomios debido a la baja necesidad computacional y capacidad de aproximar cualquier función utilizando el \textit{Polinomio de Taylor}\footnote{Aproximando funciones utilizando polinomios}, por ejemplo:
 \[ f(x)=\sin\left(\dfrac{\pi}{2}x\right)\approx \max\left(\dfrac{\pi}{2}x-\dfrac{\pi^3}{48}x^3+\dfrac{\pi^5}{3840}x^5, 1\right) \]
@@ -149,3 +151,5 @@ Veamos los resultados obtenidos utilizando diferentes homomorfismos.
   \subfloat[Interpolación con el homomorfismo \(p(t)=t^4\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-2.png}\label{fig:result2}}
   \caption{Interpolaciones con distintos homomorfismos.}
 \end{figure}
+
+% https://www.shadertoy.com/view/wt2fR1
