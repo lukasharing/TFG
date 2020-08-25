@@ -64,7 +64,7 @@ Vamos a utilizar el "\textit{Modelo de Iluminación de Phong}", presentado en 19
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/lightmodel/ambiental.png}\label{fig:ambient}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/ambiental.png}\label{fig:ambient}
   \caption{Intensidad Ambiental sobre la esfera.}
 \end{figure}
 Por otro lado, la \textbf{Intensidad Especular}, que es aportada de manera colectiva sobre el punto aproximado \(\Vec{p}\) de la \textit{isosuperficie}, para cada una de las luces de la escena \(\Vec{l_i}\in L\), donde \(\Vec{l_i}\) representa la posición de la luz, se comprueba como incide la luz sobre la superficie, con respecto de su normal. 
@@ -73,7 +73,7 @@ Donde \(\Vec{n}\) es la normal de la \textit{isosuperficie} en el punto \(\Vec{p
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/lightmodel/difusa.png}\label{fig:difusse}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/difusa.png}\label{fig:difusse}
   \caption{Intensidad Difusa sobre la esfera.}
 \end{figure}
 Veamos finalmente la \textbf{Intensidad Especular}, esta intensidad indica como incide la luz reflectada  por la \textit{isosuperficie} en el la dirección del ojo.\\
@@ -88,25 +88,19 @@ Donde \(k\in\mathbb{R}^{+}\) y este tiene efecto sobre el radio de rayos refleja
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Intensidad especular con \(h_0\)]{\includegraphics[width=0.33\textwidth]{secciones/imagenes/lightmodel/especular-0.png}\label{fig:specular-0}}
-  \subfloat[Intensidad especular con \(h_1\)]{\includegraphics[width=0.33\textwidth]{secciones/imagenes/lightmodel/especular-1.png}\label{fig:specular-1}}
-  \subfloat[Intensidad especular con \(h_3\)]{\includegraphics[width=0.33\textwidth]{secciones/imagenes/lightmodel/especular-2.png}\label{fig:specular-2}}
+  \subfloat[Intensidad especular con \(h_0\)]{\includegraphics[width=0.30\textwidth]{es}\label{fig:specular-0}}
+  \subfloat[Intensidad especular con \(h_1\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-1.png}\label{fig:specular-1}}
+  \subfloat[Intensidad especular con \(h_3\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-2.png}\label{fig:specular-2}}
   \caption{Intensidad Difusa con distintos homomorfismos}
 \end{figure}
 El modelo final, definido por la \textit{Intesidad del modelo de Phong} se calcula como la suma de las intensidades expuestas anteriormente.
 \[I_{Phong}=I_a+\sum_{\Vec{l_i}\in L} \mathrlap{\underbrace{\phantom{\Vec{n}\cdot_{[0, 1]}(\Vec{l_i}-\Vec{p})}}_{\text{Intensidad Difusa}}}\Vec{n}\cdot_{[0, 1]}(\Vec{l_i}-\Vec{p}) + \mathrlap{\underbrace{\phantom{h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)}}_{\text{Intensidad Especular}}}h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)\]
-Como hemos dicho antes, este es un factor, multiplicativo, en particular, multiplica al valor del material o en este caso, el color \textit{rgba} devuelto que era, el blanco.
-\begin{figure}[H]
-  \centering
-  \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/lightmodel/phong.png}\label{fig:phong}
-  \caption{Intensidad Phong sobre la esfera con \(h_3\).}
-\end{figure}
+En luces direccionales, el punto se considera estar en el infinito, sustituyéndose \(\Vec{l_i}-\Vec{p}\) por el vector director de la luz \(\Vec{d_i}\). En caso de utilizar una función de atenuación, el valor que tomaría  será cero, por lo que la \textit{Intensidad Especular} quedaría anulada. Además, para la \textit{Intensidad Difusa}, utilizaremos el vector director de la luz direccional en vez de la diferencia del punto aproximado \(\Vec{p}\) y la posición de la luz \(\Vec{l_i}\).\\\\
+Como hemos dicho antes, este es un factor, multiplicativo, en particular, multiplica al valor del material o en este caso, el color \textit{rgba} devuelto que era, el blanco.\\\\
 En algunas implementaciones, se utiliza para cada luz, un factor de atenuación que depende de la distancia de la superficie a la luz, esta función converge a cero en el infinito. En particular, OpenGL\footnote{A partir de la version X.X empezó...} utiliza la siguiente función:
 \[p(x)=\dfrac{1}{ax^2+bx+c}\]
-donde \(a,b,c \in \mathbb{R}^{+}_{0}\) son factores que dan una riqueza artística al modelo de iluminación, así como el \textit{homomorfismo} utilizado en la \textit{Intensidad Especular}.\\\\En luces direccionales, el punto se considera estar en el infinito, sustituyéndose \(\Vec{l_i}-\Vec{p}\) por el vector director de la luz \(\Vec{d_i}\). En caso de utilizar una función de atenuación, el valor que tomaría  será cero, por lo que la \textit{Intensidad Especular} quedaría anulada. Además, para la \textit{Intensidad Difusa}, utilizaremos el vector director de la luz direccional en vez de la diferencia del punto aproximado \(\Vec{p}\) y la posición de la luz \(\Vec{l_i}\).
-\newpage
-Veamos un ejemplo práctico en código.
+donde \(a,b,c \in \mathbb{R}^{+}_{0}\) son factores que dan una riqueza artística al modelo de iluminación, así como el \textit{homomorfismo} utilizado en la \textit{Intensidad Especular}.\\\\
+Veamos un ejemplo práctico, vamos a añadir dos luces, una direccional desde uno de los laterales de la escena y otra luz, radial. Además vamos a utilizar el \textit{homomorfismo} de \(h_3\). En código:
 \begin{lstlisting}
 // Homomorfismo
 float h3(float h){return pow(h,pow(2.,3.));}
@@ -139,9 +133,15 @@ float ModeloIluminacion(vec3 direccion, vec3 p){
     return clamp(intensidad, 0.0, 1.0);
 }
 \end{lstlisting}
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}%,margin=2cm
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/phong.png}\label{fig:phong}
+  \caption{Modelo de Phong sobre la esfera con \(h_3\).}
+\end{figure}
 \newpage
 \section{Sombras}
-Vamos a ver la técnica más sencilla para calcular las sombras, pero es importante mencionar que hablaremos únicamente de la \textit{umbra} de una la sombra. La \textit{umbra} sucede cuando la fuente de luz es ocluida completamente por una superficie. Haciendo que la luz no actue sobre la intensidad del punto.\\\\Una vez aproximado un punto \(p\) de la \textit{isosuperficie}, diremos que está en \textit{umbra}, si es ocluido por un objeto en dirección a la luz, o lo que es lo mismo, podemos utilizar el marcher desde \(\Vec{p}\) en dirección a la luz \(\Vec{l_i}\), cuyo plano trasero contiene a \(\Vec{l_i}\). Si este traza otro punto \(\Vec{q}\) en esa dirección, este estará en \textit{umbra}.\\\\
+Vamos a ver la técnica más sencilla para calcular las sombras, es importante mencionar que hablaremos únicamente de la \textit{umbra} de una la sombra, es decir, cuando la fuente de luz es ocluida completamente por una superficie. Haciendo que la luz no actue sobre la intensidad del punto.\\\\Una vez aproximado un punto \(p\) de la \textit{isosuperficie}, diremos que está en \textit{umbra}, si es ocluido por un objeto en dirección a la luz, o lo que es lo mismo, podemos utilizar el marcher desde \(\Vec{p}\) en dirección a la luz \(\Vec{l_i}\), cuyo plano trasero contiene a \(\Vec{l_i}\). Si este traza otro punto \(\Vec{q}\) en esa dirección, este estará en \textit{umbra}.\\\\
 Vamos a realizar una pequeña modificación sobre el vector \(\Vec{p}\) que ayudará a agilizar el \textit{Marcher}, ya que las primeras iteraciones de este, intentará "escapar" de la isosuperficie, para ello, vamos a empujarlo de la superficie, utilizando la normal.
 \[\Vec{p'}=\Vec{p} + \Vec{n} \cdot k\]
 Donde \(k\in\mathbb{R}^{+}_{0}\) y funciona como un factor de empuje de la superficie, se trata de un valor empírico que ayuda al marcher a salir de la isosuperficie, ya que en las primeras iteraciones, el radio de las esferas está muy próximo a \(0,0\). \\\\
@@ -151,12 +151,11 @@ Vamos a crear un modelo de iluminación con \textbf{dos} luces, una radial y otr
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/lightmodel/sombra_dura.png}\label{fig:shadow}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/sombra_dura.png}\label{fig:shadow}
   \caption{Modelo de iluminación y sombras sobre la escena definida.}
 \end{figure}
 \newpage
 \begin{lstlisting}
-// Se ha añadido un tercer argumento.
 float SphereMarching(in vec3 ojo, in vec3 direccion, float distancia_plano){
     float distancia = 0.0;
     for(int i = 0; i < PASOS; ++i){
@@ -175,7 +174,7 @@ float SphereMarching(in vec3 ojo, in vec3 direccion, float distancia_plano){
 float ModeloIluminacion(vec3 direccion, vec3 p){
     // Calculamos la normal del punto.
     vec3 normal = Normal(p);
-    // Ayuda al marcher a escapar de la isosuperficie
+    // Separamos de la isosuperficie
     p = p + normal * 0.1;
     // Modelo
     float intensidad = 0.0;

@@ -6,7 +6,7 @@ Existen técnicas para proyectar una escena en nuestras pantallas. Dentro de est
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
-  \includegraphics[width=0.6\textwidth]{secciones/imagenes/gpu.png}\label{fig:marcher}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/gpu.png}\label{fig:marcher}
   \caption{Pararelismo de la GPU en dibujado mediante rayos.}
 \end{figure}
 Definimos lanzar un rayo como aproximar con un vector o utilizar una recta para trazar una escena que encontramos desde el \textit{ojo} en dirección al píxel. Si utilizamos una recta, tratamos de la técnica \textit{raytracing}, que calcula de forma exacta la intersección con los objetos de la escena. Mientras si utilzamos un vector, trataremos de \text{raymarching}, que \textbf{aproxima} la intersección con la escena utilizando una modulación incremental del vector director.\\\\
@@ -23,7 +23,7 @@ Vamos a definir las \textbf{condiciones de parada} de este algoritmo.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/raymarching.png}\label{fig:spheremarcher}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/raymarching.png}\label{fig:spheremarcher}
   \caption{Ejemplo del algoritmo \textit{Spheremarching}}
 \end{figure}
 \newpage
@@ -126,7 +126,7 @@ Veamos una pequeña pincelada de como se ha definido esta función. Se calcula e
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=0.8\textwidth]{secciones/imagenes/starting/sdf1.png}\label{fig:hello}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/sdf1.png}\label{fig:hello}
   \caption{"Hola mundo" del algoritmo \textit{SDF}.}
 \end{figure}
 Al solo utilizar dos colores, blanco y negro, no tenemos sensación de profundidad, esto se conseguirá utilizando un modelo de iluminación, que incluyen luces y sombras.
