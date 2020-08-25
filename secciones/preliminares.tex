@@ -101,9 +101,9 @@ Vemos que los valores inferiores a \(0.6\) se transforman a valores próximos a 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/pol8-img-left.jpeg}\label{fig:white}}
+  \subfloat[Imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-left.png}\label{fig:white}}
   \hfill
-  \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/pol8-img-right.jpeg}\label{fig:black}}
+  \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-right.png}\label{fig:black}}
   \caption{Aplicación de un homeomorfismo a una imagen de grises.}
 \end{figure}
 % Pie Define monico
@@ -127,23 +127,25 @@ Como hemos visto antes, vamos a centrarnos en el intervalo \([0, 1]\). Podemos t
     \[H(x, t)=(1-t)\cdot f(x) + t\cdot g(x)\]
 \end{definition}
 Como podemos observar,  la última definición es una homotopía, ya que, la suma de dos funciones continiuas es siempre continua y los extremos resultan \(f(x)\) y \(g(x)\), respectivamente.\\\\
-Como sabemos, \(t\in[0,1]\), por lo que podemos aplicar un \textit{homomorfismo} \(p(x)\) y tener así, una versión más general.
+El canal de la máscara \(t\in[0,1]\), por lo que podemos aplicar un \textit{homeomorfismo} \(p(t)\) y tener así, una versión más general.
     \[H(x, t)=(1-p(t))\cdot f(x) + p(t)\cdot g(x)\]
 Veamos un ejemplo, supongamos que \(f(x)\) y \(g(x)\) son los colores de una imagen 3-canal y como \(t\), una tercera imagen con un canal \([0,1]\), que actuará como máscara.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Imagen \(f(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/texture-wall.jpeg}\label{fig:left}}
-  \subfloat[Imagen \(g(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/texture-galaxy.jpeg}\label{fig:right}}
-  \subfloat[Máscara \(t\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/mask.jpeg}\label{fig:result}}
+  \subfloat[Imagen \(f(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/texture-wall.png}\label{fig:left}}
+  \hfill
+  \subfloat[Imagen \(g(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/texture-galaxy.png}\label{fig:right}}
+  \hfill
+  \subfloat[Máscara \(t\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/mask.png}\label{fig:result}}
   \caption{Imagen \(f(x)\), Imagen \(g(x)\) y Máscara \(t\)}
 \end{figure}
 Veamos los resultados obtenidos utilizando diferentes homomorfismos.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Interpolación con el homomorfismo \(p(t)=t\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/masking-result-1.jpeg}\label{fig:result1}}
+  \subfloat[Interpolación con el homomorfismo \(p(t)=t\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-1.png}\label{fig:result1}}
   \hfill
-  \subfloat[Interpolación con el homomorfismo \(p(t)=t^4\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/masking-result-2.jpeg}\label{fig:result2}}
+  \subfloat[Interpolación con el homomorfismo \(p(t)=t^4\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-2.png}\label{fig:result2}}
   \caption{Interpolaciones con distintos homomorfismos.}
 \end{figure}

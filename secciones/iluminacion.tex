@@ -37,7 +37,7 @@ Si ambos son vectores directores, es decir, normalizados y en el origen, resulta
         \[\Vec{r}=\Vec{a} - 2(\Vec{n} \cdot \Vec{a})\Vec{n}\]
         \begin{minipage}{1.0\textwidth}
           \centering
-          \includegraphics[width=.25\textwidth]{secciones/imagenes/reflect.jpeg}
+          \includegraphics[width=.25\textwidth]{secciones/imagenes/lightmodel/reflect.png}
         \end{minipage}
         \\
         \pbox{10cm}{
@@ -49,7 +49,7 @@ Si ambos son vectores directores, es decir, normalizados y en el origen, resulta
         \[\Vec{r}=k\left(\Vec{a} - \left(\left(\Vec{n} \cdot \Vec{a}\right)+\sqrt{\dfrac{1}{k^2}-(\Vec{a}\cdot\Vec{n})^2}\right)\Vec{n}\right)\]
         \begin{minipage}{1.0\textwidth}
           \centering
-          \includegraphics[width=.3\textwidth]{secciones/imagenes/refract.jpeg}
+          \includegraphics[width=.3\textwidth]{secciones/imagenes/lightmodel/refract.png}
         \end{minipage}\\
         \bottomrule
     \end{tabularx}
@@ -81,15 +81,17 @@ Definimos el operador de reflexión "\(\veebar\)"\footnote{La demostración la p
 \[\Vec{a}\veebar\Vec{n}=\Vec{a} - 2(\Vec{n} \cdot \Vec{a})\Vec{n}\]
 La ecuación final de la "\textit{Intensidad Especular}" para todas las luces de la escena es,
 \[I_e = \sum_{\Vec{l_i}\in L} \Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\]
-Algunos autores aportan una leve modificación de esta ecuación, aplicando un \textit{homomorfismo} polinómico con grado exponencial.
+Algunos autores aportan una leve modificación de esta ecuación, aplicando un \textit{homeomorfismo} polinómico con grado exponencial.
 \[h_k:[0,1]\longrightarrow[0,1] , h_k(x)=x^{2^k}\]
 \[I_d = \sum_{\Vec{l_i}\in L} h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)\]
 Donde \(k\in\mathbb{R}^{+}\) y este tiene efecto sobre el radio de rayos reflejados.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Intensidad especular con \(h_0\)]{\includegraphics[width=0.30\textwidth]{es}\label{fig:specular-0}}
+  \subfloat[Intensidad especular con \(h_0\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-0.png}\label{fig:specular-0}}
+  \hfill
   \subfloat[Intensidad especular con \(h_1\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-1.png}\label{fig:specular-1}}
+  \hfill
   \subfloat[Intensidad especular con \(h_3\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-2.png}\label{fig:specular-2}}
   \caption{Intensidad Difusa con distintos homomorfismos}
 \end{figure}
@@ -99,7 +101,7 @@ En luces direccionales, el punto se considera estar en el infinito, sustituyénd
 Como hemos dicho antes, este es un factor, multiplicativo, en particular, multiplica al valor del material o en este caso, el color \textit{rgba} devuelto que era, el blanco.\\\\
 En algunas implementaciones, se utiliza para cada luz, un factor de atenuación que depende de la distancia de la superficie a la luz, esta función converge a cero en el infinito. En particular, OpenGL\footnote{A partir de la version X.X empezó...} utiliza la siguiente función:
 \[p(x)=\dfrac{1}{ax^2+bx+c}\]
-donde \(a,b,c \in \mathbb{R}^{+}_{0}\) son factores que dan una riqueza artística al modelo de iluminación, así como el \textit{homomorfismo} utilizado en la \textit{Intensidad Especular}.\\\\
+donde \(a,b,c \in \mathbb{R}^{+}_{0}\) son factores que dan una riqueza artística al modelo de iluminación, así como el \textit{homeomorfismo} utilizado en la \textit{Intensidad Especular}.\\\\
 Veamos un ejemplo práctico, vamos a añadir dos luces, una direccional desde uno de los laterales de la escena y otra luz, radial. Además vamos a utilizar el \textit{homomorfismo} de \(h_3\). En código:
 \begin{lstlisting}
 // Homomorfismo
