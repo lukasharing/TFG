@@ -24,15 +24,19 @@ In this project we are going to present a new graphic technique in thanks to the
 
 \paragraph{Chapter 3} In this chapter we will analyze the analytical algorithm used to approximate a sceene that is created using \textit{signed distance functions}. We will be presenting the online enviroment used to create this project, called \textit{Shadertoy}, designed by Iñígo Quilez and Pol Jeremias in 2013.
 
-\paragraph{Chapter 4} In this chapter, we will be presenting the basic operators to create an Illumination Model. We are going to implement an Illumination Model designed in the 70's, called Phong's Model. This model splits the light intensity into three different ones: ambient intensity, that affects with a constant value at the surface everywhere; diffuse intensity, dependent to the surface curvature and the light direction; finally, specular intensity is calculated by the reflection of the light from the surface to the eye.
+\paragraph{Chapter 4} In this chapter, we will be presenting the basic operators to create an Illumination Model. We are going to implement an Illumination Model designed in the 70's, called Phong's Model. This model splits the light intensity into three different ones: ambient intensity, that affects with a constant value at the surface everywhere; diffuse intensity, dependent to the surface curvature and the light direction and specular intensity is calculated by the reflection of the light from the surface to the eye. Finally, we will be presenting the easiest method to create a shadow used to give a notion of depth.
 
-\paragraph{Chapter 4} In this chapter we will be covering the main theme of this project, that are indispensable for the creationg of a sceene. \textit{Signed distance functions} are a special type of functions that returns a signed distance to a surface or perimetre, when the distance is positive, we would say that we are outside the sceene, when it is negative, we will be inside an object. The zeros will represent the surface but because we will be using an numerical 
+\paragraph{Chapter 5} In this chapter we will be covering the main theme of this project, that are indispensable for the creating of a scene. \textit{Signed distance functions} are a special type of functions that returns a signed distance to a surface or perimetre, when the distance is positive, we would say that we are outside the scene, when it is negative, we will be inside an object. The zeros will represent the surface, but because we will be using a numerical algorithm to march it, we will define the surface as an interval. We will be proving some of the most important primitives for 2-dimensional and 3-dimensional spaces and two types of operators, one that will not affect the marcher and the other that will create artefacts and aggravate the efficiency of the marcher.
+
+\paragraph{Chapter 6} In this penultimate chapter we will be presenting techniques to draw exact scenes, independently to the type of operator, we will talk about two problems, overestimation and underestimation. Overestimation happens when we are working with nonexact \textit{signed distance fields} and the marcher goes inside the surface or break through it. The underestimation happens in both cases, it considers background surfaces that, with more iterations, will be traced.
+
+\paragraph{Chapter 7} Finally, in this last chapter, we will show how to use different colors and materials, we will give an ID to each object from the scene, that, will make some a lot of changes in code to work. We will present projection of a shape into texture coordinate space.
 
 \vspace{0.7cm}
 \noindent{
 	\spacedlowsmallcaps{Keywords}
-	\textit{open source}, 
-	\textit{floss}
+	\textit{graphics}, \textit{signed distance functions}, 
+	\textit{illumination model}, \textit{texturing}
 }
 
 \end{otherlanguage}

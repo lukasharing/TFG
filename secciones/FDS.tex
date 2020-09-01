@@ -666,10 +666,19 @@ El resultado es el siguiente,
 Enlace del ejemplo:\url{https://www.shadertoy.com/view/3tXfDl}\\\\
 Podemos observar que este operador devuelve una figura ensanchada con los bordes redondeados, debido a la métrica, aunque podemos conseguir una figura con bordes redondeados y con la dimensiones originales, sin ensanchar, combinándolo con el operador de escalado.\\\\
 Finalmente, vamos a presentar operadores que transforman figuras exactas de \(\mathbb{R}^2\) en otras en \(\mathbb{R}^3\) de manera exacta. Esto nos será útil ya que podemos calcular una \textit{función de distancia con signo exacta} en \(\mathbb{R}^2\) y utilizar uno de estos operadores para crear uno nuevo que deducirlo matemáticamente, hubiera sido tedioso. Vamos a ver dos, el operador de \textit{revolución} y el operador de \textit{extrusión}.
+
 \subsection{Operador de revolución}
-Vamos a demostrar para el caso particular de la revolución sobre el plano \(\overline{XY}\), ya que las demostraciones para los demás ejes son equivalentes. Veamos una intuición general de la demostración, para cualquier punto \(\Vec{p}\), rotamos el eje \(\overline{XZ}\) hasta hacer que el plano \(\overline{XY}\) lo contenga, o lo que es lo mismo, anulando la componente \(z\) del vector proyectado  \(\Vec{p}_{\overline{XZ}}=\begin{pmatrix}
+Vamos a demostrar para el caso particular de la revolución sobre el plano \(\overline{XZ}\), ya que las demostraciones para los demás ejes son equivalentes. Veamos una intuición general de la demostración, para cualquier punto \(\Vec{p}\), rotamos el eje \(\overline{XZ}\) hasta hacer que el plano \(\overline{XY}\) lo contenga, o lo que es lo mismo, anulando la componente \(z\) del vector proyectado  \(\Vec{p}_{\overline{XZ}}=\begin{pmatrix}
     x& z
-\end{pmatrix}\), a partir de ahí, basta con aplicar la \textit{función de distancia con signo 2D} sobre el punto calculado.\\\\
+\end{pmatrix}\), a partir de ahí, basta con aplicar la \textit{función de distancia con signo 2D} sobre el punto calculado:
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}%,margin=2cm
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/proofs/proof_revolution.png}\label{fig:capsula}
+  \caption{Operador de revolución, ejemplo sobre \(\overline{XZ}\)}
+\end{figure}
+
 Utilizaremos el ángulo \(\alpha\) sobre la proyección \(\Vec{p}_{\overline{XZ}}\) y utilizaremos la matriz de rotación en sentido horario para anular \(z\):
 \[\Vec{p}_{\overline{XZ}}^{\alpha}=\Vec{p}_{\overline{XZ}}\cdot\text{rot}(\alpha)
 \]
@@ -745,7 +754,7 @@ Dividimos el ejercicio en dos subproblemas, por encima de la tapa \(\Delta c \ge
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/proofs/proof_extrussion.png}\label{fig:capsula}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/proofs/proof_extrussion.png}\label{fig:proof_extrussion}
   \caption{Visualización de una extrusión genérica}
 \end{figure}
 

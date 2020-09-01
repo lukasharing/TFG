@@ -1,6 +1,5 @@
 \chapter{Materiales\label{ch:materiales}}
-En este último capítulo, vamos a ver como dar color y texturas a los elementos de nuestra escena. Identificaremos cada elemento asignando un entero positivo \(id \in \mathbb{N}\) que será devuelto junto con la distancia a este objeto, es decir, vamos a devolver un \textit{vec2} cuya componente \enquote{x} será la distancia y cuya componente \enquote{y}, el identificador \(id\). Asignaremos la constante \(id=-1\) cuando no se ha trazado ningún objeto.\\\\
-En primer luegar, vamos a modificar el \textit{Marcher} para que este pueda devolver ambos valores:
+En este último capítulo, vamos a ver como dar color y texturas a los elementos de nuestra escena. Identificaremos cada elemento asignando un entero positivo \(id \in \mathbb{N}\) que será devuelto junto con la distancia a este objeto, es decir, vamos a devolver un \textit{vec2} cuya componente \enquote{x} será la distancia y cuya componente \enquote{y}, el identificador \(id\). Asignaremos la constante \(id=-1\) cuando no se ha trazado ningún objeto. Primero, vamos a modificar el \textit{Marcher} para que este pueda devolver ambos valores:
 
 \begin{lstlisting}
 // Devolvemos dos elementos, distancia e id.
@@ -11,8 +10,10 @@ vec2 SphereMarching(vec3 ojo, vec3 direccion){
         vec3 p = ojo + direccion * distancia;
         // La escena devuelve el radio de la bola y el id del elemento
         vec2 info = escena_sdf(p);
+        // Factor para la sobreestimación.
+        info.x *= 1.0;
         // info.x contiene la distancia
-        if(info.x < EPSILON){
+        if(abs(info.x) < EPSILON){
             // info.y contiene el id de un elemento de la escena.
             // Devolvemos la distancia acumulada (o distancia del ojo a la superficie) y el id.
             return vec2(distancia, info.y);
@@ -58,19 +59,18 @@ vec2 escena_sdf(vec3 p){
 }
 \end{lstlisting}
 
-Al devolver ahora dos componentes, debemos modificar todas las funciones que hacían uso de esta función, donde encontramos \enquote{Normal} y \enquote{ModeloIluminacion}. Vamos a utilizar el valor devuelto, asignar un material, para ello, vamos a crear una nueva función \enquote{obtenerMaterial} Pongamos como ejemplo una sección de un toro y una esfera, el código y apliquemos el esquema utilizado para \enquote{\textit{escena\_sdf}}. El resultado:
+Al devolver ahora dos componentes, debemos modificar todas las funciones que hacían uso de esta función, donde encontramos \enquote{Normal} y \enquote{ModeloIluminacion}. Utilizamos el identificador devuelto para asignar un material, en código, recibe el nombre de \enquote{obtenerMaterial}. El material será multiplicado por la intensidad.
+\[ \text{color}_{rgb}(id) = \text{obtenerMaterial}(id) \cdot I_{Phong} \]
+Pongamos como ejemplo: una sección de un toro y una esfera, aplicando el esquema de código utilizado antes:
 
 \begin{lstlisting}
 vec2 escena_sdf(vec3 p){
-    // Identificador inicial y distancia máxima.
+    // ID inicial y distancia máxima.
     float id = -1.0;
     float min_dist = MAXIMO;
-    // Toro de radio interno 0.3 y radio externo 0.05.
-    // Seccionado por un plano n = -z.
-    // Rotamos el toro 
-    vec3 pr = rotYZ(p, PI / 4.);
+    // Toro rotado ri = 0.3 y r = 0.05. seccionado por un plano n=-z.
     float sdf_0 = max(
-        SDFToro(pr, 0.3, 0.05),
+        SDFToro(rotYZ(p, PI / 4.), .3, .05),
         SDFPlano(p, vec3(0., 0., -1.))
     );
     // Comprobamos que sea la mas cercana.
@@ -83,15 +83,14 @@ vec2 escena_sdf(vec3 p){
     float sdf_1 = SDFEsfera(p, 0.2);
     // Comprobamos que sea la mas cercana.
     if(sdf_1 < min_dist){
-        // identificador de la esfera.
+        // Identificador de la esfera.
         id = 1.;
         min_dist = sdf_1;
     }
-    // Finalmente, devolvemos la distancia mínima y el objeto que la devuelve.
+    // (distancia mínima, id)
     return vec2(min_dist, id);
 }
 \end{lstlisting}
-
 
 \begin{figure}[H]
   \centering
@@ -101,3 +100,60 @@ vec2 escena_sdf(vec3 p){
 \end{figure}
 
 Enlace del ejemplo:\url{https://www.shadertoy.com/view/wlBBRR}
+
+En el ejemplo anterior, \textit{obtenerMaterial}, hace uso únicamente del identificador para devolver el color deseado:
+
+\begin{lstlisting}
+// Devuelve el color del material en el punto p
+vec4 obtenerMaterial(vec3 p, float id){
+    // Identificador del toro seccionado
+    if(id == 0.){
+        return vec4(1., 0., 0., 1.);
+    }else if(id == 1.0){
+        return vec4(0., 0., 1., 1.);
+    }
+}
+\end{lstlisting}
+
+Podemos utilizar el punto \(\Vec{p}\) para crear una proyección hacia el sistema de coordenadas de alguna textura asignada en un canal y que podemos acceder mediante el operador \enquote{texture} de \textit{GLSL}. Utilizaremos la textura creada en el ejemplo, \ref{fig:homotopies} y calcularemos la proyecicón de la esfera sobre las coordenadas de la textura:
+\[\begin{pmatrix}
+    u&
+    v
+\end{pmatrix}=  0.5\cdot
+\begin{pmatrix}
+    \dfrac{\arctan\left(\dfrac{\Vec{p}_x}{\Vec{p}_z}\right)}{\pi}+1&
+    \Vec{p}_y + 1
+\end{pmatrix}
+\]
+
+\begin{lstlisting}
+// Devuelve el material en el punto p
+vec4 obtenerMaterial(vec3 p, float id){
+    // Identificador del toro seccionado
+    if(id == 0.){
+        return vec4(1., 0., 0., 1.);
+    }else if(id == 1.0){
+    	vec3 n = normalize(p);
+        vec2 uv = vec2(
+            atan(n.x, n.z) / (2.*PI) + 0.5,
+            n.y * 0.5 + 0.5
+        );
+        // Ejemplo : TFG 0-1 Homotopía
+        vec4 text0 = texture(iChannel0,uv);
+        vec4 text1 = texture(iChannel1,uv);
+        float mascara = min(texture(iChannel2, uv*.25).r*2., 1.);
+        vec3 homotopia = mix(text0.rgb, text1.rgb, h(mascara));
+        // Devolvemos la textura
+        return vec4(homotopia, 1.);
+    }
+}
+\end{lstlisting}
+
+El resultado:
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}%,margin=2cm
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/material/textura.png}\label{fig:texture}
+  \caption{Textura asignada a la semiesfera}
+\end{figure}
