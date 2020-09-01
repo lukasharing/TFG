@@ -2,50 +2,48 @@
 
 
 % https://it.wikipedia.org/wiki/Isosuperficie#cite_note-:2-3
-\section{Funciones de distancia con signo}
+\section{Funciones de distancia con signo\label{sec:fds}}
 
-Una función de distancia con signo (\textit{FDS}) se trata de una aplicación \(f: \mathbb{R}^n\longrightarrow \mathbb{R}\). Esta aplicación transforma un punto en un espacio multidimensional en una distancia con signo a la superficie más cercana. El signo da información sobre cuán cerca/dentro está de los objetos.\\\\
-Vamos a simplificar esta clase de funciones multidimensionales en dos casos que podremos adaptar a nuestra computadora. Especialmente, la 2-dimensional y 3-dimensional.\\\\
-Como su nombre indica, son funciones que devuelven una distancia signada, un número real. En el caso de las funciones bidimensionales, nos devolverá la distancia mínima a una curva. Mientras que para las funciones tridimensionales, obtendremos la distancia mínima a la superficie. 
-\[f(x, y)=d \text{ y } f(x,y,z)=d , d \in \mathbb{R}\text{, respectivamente.}\]
-El signo de esta distancia contiene información sobre la escena. Si la distancia es positiva, nos encontramos en el exterior de una figura. Cuando esta es cero, nos encontraremos en la superficie (corteza). Por último, si la distancia es negativa, estaremos dentro de la figura.\\\\
-Cuando tratamos de una \textit{superficie o curva cerrada}, según la dimensión, la distancia es negativa. La distancia en positivo representa la profundidad del punto respecto de la corteza. 
+Una función de distancia con signo (\textit{FDS}) se trata de una aplicación \(f: \mathbb{R}^n\longrightarrow \mathbb{R}\). Esta aplicación transforma un punto \(\Vec{p}\) de un espacio multidimensional en un valor. En particular, trabajaremos con espacios bidimensionales y tridimensionales, donde el valor devuelto es la distancia mínima con signo hasta un punto \(\Vec{q}\) de un perímetro o una superficie \(S\). 
+\[f(\Vec{p})=\pm min_{\Vec{q}\in S}\vert\vert \Vec{p}-\Vec{q} \vert\vert , \Vec{p} \in \mathbb{R}^n, n\in \{2,3\}\]
+El signo de esta distancia contiene información sobre la escena: con una distancia positiva, nos encontramos en el exterior de una figura, en caso de ser cero, nos encontraremos en la superficie (corteza) \(S\), por último, con una distancia negativa, estaremos dentro del volúmen de la figura, que en positivo representa la profundidad del punto respecto de la corteza. 
 
 \begin{definition}
-	Sea \(f(x, y)\) una función de distancia con signo bidimensional, definimos como \textit{isoperímetro} \(L\) al conjunto de puntos tales que \(f(x,y) = 0\).
+	Sea \(f:\mathbb{R}^2\longrightarrow\mathbb{R}\), una función de distancia con signo, definimos como \textit{isoperímetro}, \(L=\{\Vec{p} \vert f(\Vec{p})=0\}\).
 \end{definition}
 
 \begin{definition}
-	Sea \(f(x, y, z)\) una función de distancia con signo tridimensional, definimos como \textit{isosuperficie} \(S\) al conjunto de puntos tales que \(f(x, y, z) = 0\).
+	Sea \(f:\mathbb{R}^3\longrightarrow\mathbb{R}\), una función de distancia con signo, definimos como \textit{isosuperficie}, \(S=\{\Vec{p} \vert f(\Vec{p})=0\}\).
 \end{definition}
-Utilizaremos las coordenadas de los píxeles de nuestra pantalla para pintar una escena bidimensional. Si el valor de la función sobre la coordenada es inferior o igual a cero, le daremos un color, ya que estamos en el interior del \textit{isoperimetro}. \\\\
-Para dibujar una escena tri-dimensionales sobre nuestra pantalla plana necesitaremos un \textit{Raymarcher}. Consiste en lanzar un rayo (vector) de módulo incremental hasta aproximarnos a la \textit{isosuperficie}. 
+
+Para esta última definición, presentaremos un algoritmo de trazado de escena denominado \textit{Spheremarcher}\ref{sec:spheremarching}.
 \newpage
-\section{La normal de una isosuperficie}
+\section{La normal de una isosuperficie \label{sec:normal}}
 
-La normal de una superficie es fundamental para la confección de una escena. Especialmente en el modelo de iluminación, que veremos más adelante.
+Vamos a presentar un teorema\footnote{\url{https://ocw.mit.edu/courses/mathematics/18-02sc-multivariable-calculus-fall-2010/2.-partial-derivatives/part-b-chain-rule-gradient-and-directional-derivatives/session-36-proof/MIT18_02SC_notes_19.pdf}} esencial para el cálculo de la normal de una superficie ya que es fundamental para la confección de una escena, especialmente en un modelo de iluminación\ref{iluminacion}.
 
 \begin{theorem}
-	El vector gradiente \(\nabla f(x_0, y_0, z_0)\)  es ortogonal a la \textit{isosuperficies} \(S\) en el punto \((x_0, y_0, z_0)\)\footnote{Véase la demostración en el libro ""}.
+	El vector gradiente \(\nabla f(x_0, y_0, z_0)\)  es perpendicular a la curva de la tangente de una \textit{isosuperficie} en el punto \(\Vec{p}=(x_0, y_0, z_0)\).
 \end{theorem}
 % Nota pie, 
-En realidad nos quiere decir que la normal de una \textit{isosuperficie} se puede calcular mediante el gradiente, o lo que es lo mismo, el gradiente es la normal de una \textit{isosuperficie}.\\\\
-Su demostración está basada en el concepto del plano tangente.\\\\
+En realidad, nos quiere decir que la normal de una \textit{isosuperficie} es proporcional a su gradiente o exacta en caso de su posterior normalización\footnote{Decimos que un vector está normalizado cuando su módulo es exactamente \(1\) .}, que denotaremos:
+\[norm:\mathbb{R}^n\longrightarrow\mathbb{R}^n, norm(\Vec{v})=\dfrac{\Vec{v}}{\vert\vert v \vert\vert}\]
+%Su demostración está basada en el concepto del plano tangente.\\\\
 % https://tutorial.math.lamar.edu/classes/calciii/gradientvectortangentplane.aspx
-Veamos cómo podemos calcular el gradiente, por definición:
+Se define formalmente el gradiente de una función tridimensional, como:
 \[ \nabla f(x, y, z)= < \partial_x f, \partial_y f, \partial_z f, > \]
-donde 
+donde \enquote{\(\partial_{x_i}\)} es la derivada parcial de una función respecto de la variable \(x_i\). Definida por: 
 \[ \partial_{x_i}f=\lim_{\epsilon\longrightarrow 0}\dfrac{f(x_0,\cdots,x_i+\epsilon,\cdots,x_n)-f(x_0, \cdots, x_n)}{\epsilon} \]
-Se puede aproximar computacionalmente, haciendo \(\epsilon = 0.001\).
+Se puede aproximar computacionalmente, tomando \(\epsilon\) próximo a \(0\), por ejemplo, \(\epsilon = 0.001\).
 Finalmente, definimos el gradiente computado como:
 \[
-\Vec{n}=\nabla f(x, y, z)\approx
+\Vec{n}=norm(\nabla f(x, y, z))\approx norm\left(
 \stretchleftright[1000]{\langle}
 {\begin{array}{c}
 \dfrac{f(x+0.001,y,z)-f(x,y,z)}{0.001}\\
 \dfrac{f(x,y+0.001,z)-f(x,y,z)}{0.001}\\
 \dfrac{f(x,y,z+0.001)-f(x,y,z)}{0.001} \end{array}}
-{\rangle}
+{\rangle}\right)
 \]
 
 \section{Homeomorfismos sobre [0, 1]}
@@ -53,7 +51,7 @@ Finalmente, definimos el gradiente computado como:
 Vamos a definir una aplicación que nos ayudará a deformar funciones de manera continua. Esta aplicación nos será muy útil para manipular las propiedades de la escena, por ejemplo, la intensidad lumínica en nuestro modelo de iluminación, transformación de color, velocidad de un objeto de un punto a otro, etc.
 
 \begin{definition}
-    Sea una función \(f:X\longrightarrow Y\), se trata de un homeomorfismo\footnote{Véase la demostración en el libro ""} si,
+    Sea una función \(f:X\longrightarrow Y\), diremos que esta es homeomófica, si y solo si:
     \begin{enumerate}
         \item \(f\) es continua.
         \item \(f\) es biyectiva.
@@ -61,10 +59,9 @@ Vamos a definir una aplicación que nos ayudará a deformar funciones de manera 
     \end{enumerate}
 \end{definition}
 Restringimos los homeomorfismos a \(X=Y=[0,1]\) con \(f(0)=0\) y \(f(1)=1\). Esta restricción es importante para valores normalizados, ya que aseguramos que sus extremos quedan invariantes.\\\\
-Supongamos una imagen en escala de grises con un único canal (para simplificar el ejemplo). El canal acepta un intervalo real \([0, 1]\), donde el color negro es el \(0\) y el blanco, el \(1\).
-Además, vamos a definir nuestro \textit{homeomorfismo}, tal que:
+Supongamos una imagen en escala de grises con un único canal. El canal acepta un intervalo real \([0, 1]\), donde el color negro es el \(0\) y el blanco, el \(1\). Por ejemplo, definimos nuestro \textit{homeomorfismo}:
 \[f(x)=x^8, x \in [0, 1]\]
-Así, podemos comprobar que esta función cumple con las propiedades descritas anteriormente. Veamos la forma de los polinómios mónicos hasta el grado \(11\), en \textcolor{blue}{azul} el de grado \(8\).
+Así, podemos comprobar que esta función cumple con las propiedades descritas anteriormente. En la siguiente representación podemos distinguir una serie de exponentes desde 1 hasta 11, en \textcolor{blue}{azul} nuestra función \(f\).
 \begin{figure}[H]
     \centering
     \captionsetup{justification=centering}%,margin=2cm
@@ -94,62 +91,62 @@ Así, podemos comprobar que esta función cumple con las propiedades descritas a
             \addplot[gray] (x,x^11);
         \end{axis}
     \end{tikzpicture}
-    \caption{Polinomios mónicos hasta grado 11} \label{fig:M1}
+    \caption{Gráfica de los distintos \(f_n(x)=x^n, n\in\{1,\cdots,11\}\subset \mathbb{N}\) } \label{fig:M1}
 \end{figure}
-
-Vemos que los valores inferiores a \(0.6\) se transforman a valores próximos a \(0.0\), oscureciendo los tonos grises. Mientras que los colores más claros, se mantienen.
+Los valores inferiores a \(0.6\) se transforman a valores próximos a \(0.0\), oscureciendo los tonos grises, manteniendo los colores claros.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-left.png}\label{fig:white}}
+  \subfloat[Imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-left.png}}
   \hfill
-  \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-right.png}\label{fig:black}}
-  \caption{Aplicación de un homeomorfismo a una imagen de grises.}
+  \subfloat[\(f(x)=x^8\) sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-right.png}}
+  \caption{A la izquierda una imagen con un canal \([0,1]\). A la derecha, la misma imagen, pero aplicado el \textit{homeomorfismo} \(f\). En código: \url{https://www.shadertoy.com/view/wljfR1}}
+  \label{fig:homeomorphism}
 \end{figure}
-% https://www.shadertoy.com/view/wljfR1
-
-% Pie Define monico
-En el ejemplo anterior hemos visto un polinomio mónico\footnote{La definición de mónico se puede encontrar en el libro ""}, pero podemos utilizar cualquier otra función que cumpla con las restricciones. Aún así, es recomendable utilizar polinomios debido a la baja necesidad computacional y capacidad de aproximar cualquier función utilizando el \textit{Polinomio de Taylor}\footnote{Aproximando funciones utilizando polinomios}, por ejemplo:
+Podemos definir nuestra función \(f\) sobre el intervalo \([0,1]\) con menos requerimiento computacional utilizando una \textit{aproximación de Taylor para un intervalo}\footnote{Aproximación de taylor sobre un intervalo con tolerancia. Enlace:
+\url{https://mathinsight.org/achieving_desired_tolerance_taylor_polynomial_desired_interval_refresher}
+}:
 \[ f(x)=\sin\left(\dfrac{\pi}{2}x\right)\approx \max\left(\dfrac{\pi}{2}x-\dfrac{\pi^3}{48}x^3+\dfrac{\pi^5}{3840}x^5, 1\right) \]
 
-\section{Homotopías e interpolaciones.}
+\section{Homotopías}
 % Nota pie
-En esta última sección, vamos a ver una aplicación matemática que es utilizada para animación y texturización.
-Como hemos visto antes, vamos a centrarnos en el intervalo \([0, 1]\). Podemos trabajar con cualquier intervalo, pero antes deberemos normalizar y finalmente, reescalar.
+En esta última sección, vamos a ver una aplicación matemática que es utilizada para animación y texturización. Vamos a centrarnos en el intervalo \([0, 1]\), aunque podemos trabajar sobre cualquier intervalo, antes deberemos normalizar y  finalmente, reescalar.
 
 \begin{definition}
-    Dadas dos aplicaciones \(f, g:X\longrightarrow Y\), continuas, decimos que son homotópicas\footnote{Definición de homotopía}. Si existe una aplicación \(H\), también continua, tal que:
+    Dadas dos aplicaciones \(f, g:X\longrightarrow Y\), continuas, decimos que son homotópicas. Si existe una aplicación \(H\), también continua, tal que:
     \[ H:X\times[0,1]\longrightarrow Y \]
     \[ H(x, 0)=f(x) \]
     \[ H(x, 1)=g(x) \]
 \end{definition}
 % nota pie
 \begin{definition}
-    Dada una homotopía \(H\), llamaremos función de interpolación lineal o función de mezcla con peso\footnote{Encontramos este término en libros como} a la apliación:
+    Claramente \(H\) es una homotopía, llamaremos función de interpolación lineal o función de mezcla con peso\label{def:mix}\footnote{Encontramos este término en libros como} a la apliación:
     \[H(x, t)=(1-t)\cdot f(x) + t\cdot g(x)\]
 \end{definition}
 Como podemos observar,  la última definición es una homotopía, ya que, la suma de dos funciones continiuas es siempre continua y los extremos resultan \(f(x)\) y \(g(x)\), respectivamente.\\\\
-El canal de la máscara \(t\in[0,1]\), por lo que podemos aplicar un \textit{homeomorfismo} \(p(t)\) y tener así, una versión más general.
-    \[H(x, t)=(1-p(t))\cdot f(x) + p(t)\cdot g(x)\]
+Como \(t\in[0,1]\), podemos aplicar un \textit{homeomorfismo} \(p(t)\) y tener así, una versión más general.
+    \[H(x, t')=H(x, p(t))=(1-p(t))\cdot f(x) + p(t)\cdot g(x)\]
 Veamos un ejemplo, supongamos que \(f(x)\) y \(g(x)\) son los colores de una imagen 3-canal y como \(t\), una tercera imagen con un canal \([0,1]\), que actuará como máscara.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Imagen \(f(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/texture-wall.png}\label{fig:left}}
+  \subfloat[Imagen \(f(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/texture-wall.png}}
   \hfill
-  \subfloat[Imagen \(g(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/texture-galaxy.png}\label{fig:right}}
+  \subfloat[Imagen \(g(x)\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/texture-galaxy.png}}
   \hfill
-  \subfloat[Máscara \(t\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/mask.png}\label{fig:result}}
+  \subfloat[Máscara \(t\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/preliminars/mask.png}}
   \caption{Imagen \(f(x)\), Imagen \(g(x)\) y Máscara \(t\)}
+  \label{fig:textures}
 \end{figure}
-Veamos los resultados obtenidos utilizando diferentes homomorfismos.
+Los resultados obtenidos con diferentes homomorfismos.
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Interpolación con el homomorfismo \(p(t)=t\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-1.png}\label{fig:result1}}
+  \subfloat[Mezcla con el homeomorfismo \(p(t)=t\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-1.png}}
   \hfill
-  \subfloat[Interpolación con el homomorfismo \(p(t)=t^4\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-2.png}\label{fig:result2}}
-  \caption{Interpolaciones con distintos homomorfismos.}
+  \subfloat[Mezcla con el homeomorfismo \(p(t)=t^4\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/masking-result-2.png}}
+  \caption{Mezcla con distintos homomorfismos.}
+  \label{fig:homotopies}
 \end{figure}
 
-% https://www.shadertoy.com/view/wt2fR1
+Un ejemplo práctico: \url{https://www.shadertoy.com/view/wt2fR1}

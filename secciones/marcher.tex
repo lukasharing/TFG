@@ -1,31 +1,39 @@
 % https://adrianb.io/2016/10/01/raymarching.html#introduction-to-raymarching
-\chapter{Marcher}
+\chapter{Marcher\label{ch:marcher}}
 % https://books.google.es/books?id=MNqRDwAAQBAJ&pg=PA13&dq=sphere+ray+marcher+graphics&hl=es&sa=X&ved=0ahUKEwj1sqWTgZvrAhUCxhoKHRwBCVIQ6AEIJzAA#v=onepage&q=sphere%20ray%20marcher%20graphics&f=false
-Gracias a los avances tecnológicos y al incremento de la potencia de los micro-procesadores, a esto, unido la paralelización de tareas y dispositivos hardwares especializados como la \textit{GPU}, ha permitido que se pueda proponer esta técnica. Cada píxel de nuestra pantalla es calculado por una \textit{hebra} de la GPU, una especie de micro-procesador que trabaja de manera individual, sin memoria y sin intercomunicación con las demás. Todas ejecutan el mismo código, contiene información de la pantalla como la coordenada del pixel que está calculado, la resolución, etc. y devuelve un valor \textit{rgba}, en formato \textit{vec4}.\\\\
-Existen técnicas para proyectar una escena en nuestras pantallas. Dentro de esta categoría de técnicas, encontramos las técnicas basadas en "rayos" (\textit{rays}). Para cada pixel de nuestra pantalla, "lanzaremos un rayo" desde un ojo, que es el nombre que recibe el origen de la cámara, en dirección al píxel, suponiendo que nuestra pantalla está en la escena. Si este rayo intersecta sobre una superficie, entonces podemos dibujarlo.\\\\
+Un \textit{fragment shader} es aplicado a cada píxel de nuestra pantalla, que es procesado por una \textit{hebra} de la \textit{GPU}, una especie de microprocesador que trabaja de manera individual. La hebra contiene información del pixel como es la posición y la resolución, esta devolverá un color en formato \textit{rgba} con tipo \textit{vec4}.\\\\
+Utilizaremos la plataforma \textit{Shadertoy}\footnote{Creada por Iñigo Quilez  y Pol Jeremias, 2013. \url{https://www.shadertoy.com/}}, un entorno de trabajo online adecuado para escribir nuestros \textit{shaders}. Este utiliza la \textit{API WebGL} para crear una escena de una figura con 4 vértices formando un rectángulo de dos triángulos posicionado en el plano frontal (o \textit{Viewport}) al que se le va a aplicar el \textit{shader} escrito como un \textit{Fragment Shader}, como podemos observar en \fullref{fig:marcher}. \\\\
+Dada una escena analítica, vamos a presentar técnicas de trazado de escenas, suponiendo que nuestra pantalla se encuentra en la escena y \enquote{lanzaremos un rayo} hacia cada pixel desde un punto que denotaremos como la posición de la cámara. Definimos \enquote{lanzar un rayo} como el proceso, analítico o numérico, del cálculo de una intersección desde un punto en una dirección. Como proceso analítico, o cálculo exacto, encontramos la técnica 
+\textit{analytical raytracing}\footnote{Podemos encontrar más información sobre el tema: \url{https://www.sciencedirect.com/science/article/pii/S0010465513002713}}, por otro lado, en la técnica numérica, encontramos el algoritmo que vamos a utilizar, \textit{Spheremarching}\ref{sec:spheremarching}.
+
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/gpu.png}\label{fig:marcher}
-  \caption{Pararelismo de la GPU en dibujado mediante rayos.}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/gpu.png}\label{fig:marcher}
+  \caption{Lanzamiento de rayos para el trazado de una escena}
 \end{figure}
-Definimos lanzar un rayo como aproximar con un vector o utilizar una recta para trazar una escena que encontramos desde el \textit{ojo} en dirección al píxel. Si utilizamos una recta, tratamos de la técnica \textit{raytracing}, que calcula de forma exacta la intersección con los objetos de la escena. Mientras si utilzamos un vector, trataremos de \text{raymarching}, que \textbf{aproxima} la intersección con la escena utilizando una modulación incremental del vector director.\\\\
-Computacionalmente, aproximar, suele ser menos costoso que calcular de forma exacta el resultado. Por ello, vamos a utilizar la técnica de \textit{Raymarching}, para aproximar la escena y las \textit{funciones de distancia con signo} para crearla, esta técnica recibe el nombre de \textit{Spheremarching}, que se le ha atribuido el reconocimiento a John Hart en 1996 aunque  se cree que ya otros autores habían investigado acerca de la técnica presentada. \\\\
-Utilizaremos el vector director del \textit{ojo} hacia el píxel, incrementando el módulo según el valor de distancia desde la cabeza del vector, de manera recursiva con un número de iteraciones máximas. Recibe el prefijo \enquote{\textit{Sphere}\textendash} ya que, por definición, podemos generar una esfera de radio \(r\), sobre la cabeza del vector, con valor de la función de distancia \(r=sdf(x,y,z)\). Tal que, la esfera, no contine ningún punto en su interior.\\\\
-Para fijar el número de iteraciones, se recomienda utilizar una potencia de \(2\). Cuanto mayor sea este número, mejor será la aproximación, aunque, mayor el gasto computacional. No existe un valor por defecto, este dependerá de la escena utilizada y será elegido de forma empírica.\\
-Vamos a definir las \textbf{condiciones de parada} de este algoritmo.
+
+
+\section{Spheremarching\label{sec:spheremarching}}
+Los algoritmos numéricos suelen ser menos costosos computacionalmente, aproximando con una variable de control que afecta al resultado trazado. En particular, se trata de una técnica reiterativa, conocidas como \textit{Raymarcher}. John C. Hart presentó en 1995 un algoritmo de esta categoría con el nombre de  \textit{Spheremarching}\footnote{El enlace al documento publicado: \url{https://www.researchgate.net/publication/2792108_Sphere_Tracing_A_Geometric_Method_for_the_Antialiased_Ray_Tracing_of_Implicit_Surfaces}}.\\\\
+Esta técnica hace uso las \textit{funciones de distancia con signo} como escena y recibe el atributo de iterativo, ya que, desde la posición de la \textit{cámara} u \textit{ojo}, incrementa el vector director hacia el pixel, conocido como \enquote{rayo} y es proporcional a la \textit{función de distancia con signo} devuelto por el vector iterado. Recibe el prefijo \enquote{\textit{Sphere}\textendash}, ya que, podemos generar, para cada iteracion, una esfera de radio igual al valor de la distancia con signo, sin ningún punto en su interior. Definimos el vector \enquote{rayo} en la iteració n-ésima, como:
+\[ \Vec{p}_{n}=\Vec{ojo} + \Vec{direccion} \cdot d_{n} \]
+donde \(d_{n}\) es la distancia total recorrida por todas las iteraciones:
+\[d_{n}=d_{n-1} + f(\Vec{p}_{n-1})\text{ con } d_0=0\]
+Al tratarse de un modelo iterativo, debemos describir las condiciones de parada del algoritmo, donde vamos a destacar tres:
 \begin{enumerate}
-    \item Estar cerca de la isosuperficie. Como el radio de la esfera, indica la distancia a la isosuperfice más cercana, utilizaremos un umbral \(\epsilon\), muy pequeño, para definir la distancia a la que consideramos isosuperficie, en un modelo exacto, \(\epsilon=0.0\).
-    \item Superar una cierta distancia recorrida, esta distancia actuará como plano trasero, en caso de superarlo, devolveremos la distancia impuesta para dicho plano. 
-    \item Superar el número de iteraciones máximas, en caso afirmativo, devolveremos la distancia al plano trasero.
+    \item \textbf{Primera condición}. El algoritmo finalizará cuando estemos \enquote{sobre} la \textit{isosuperficie}. Al tratarse de un algoritmo numérico, vamos a aproximarla, utilizando una variable de control \(\epsilon\) que relajará la restricción de la definición de  \textit{isosuperficie}, haciendo \(f(\Vec{p}_n) < \epsilon\), ya que, si \(\epsilon = 0\), trataríamos de un modelo analítico.
+    \item \textbf{Segunda condición}. Superar una cierta distancia recorrida, \(d_{n}\ge MAXIMO\), creando una esfera de trazado sobre el punto de la cámara.
+    \item \textbf{Tercera condición}. Superar el número de iteraciones máximas, \(n \ge PASOS\).
 \end{enumerate}
- En los casos en los que se devuelve la distancia al panel trasero, recibirán el nombre de "\textit{fallo}", que representa un pixel que no ha podido trazar una isosuperficie. Pudiéndose considerar, el fondo de la escena, existen algunos casos, en los que encerraremos nuestra escena en una isosuperficie que actuará como fondo.
-\begin{figure}[H]
+Este algoritmo devolverá \(d_n\) para el número de iteraciones fijadas, \enquote{PASOS}. Cuando el algoritmo finaliza debido a la \textbf{segunda o tercera condición}, devolverá, \(d_n=MAXIMO\), recibiendo el nombre de \enquote{\textit{fallo}}. Un fallo, representando un pixel vacío, sin superficie trazada, pudiéndose considerar el fondo de la escena.
+ \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/raymarching.png}\label{fig:spheremarcher}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/raymarching.png}\label{fig:spheremarcher}
   \caption{Ejemplo del algoritmo \textit{Spheremarching}}
 \end{figure}
+
 \newpage
 \begin{lstlisting}
 #define PASOS 128 // Número Máximo de Iteraciones.
@@ -34,8 +42,8 @@ Vamos a definir las \textbf{condiciones de parada} de este algoritmo.
 
 // Pasamos el origen del ojo y la dirección, nos devuelve la distancia al objeto más cercano del ojo en dicha dirección.
 float SphereMarching(
-    vec3 ojo, 
-    vec3 direccion
+    in vec3 ojo, 
+    in vec3 direccion
 ){
     float distancia = 0.0;
     // Realizamos "PASOS" iteraciones de marching.
@@ -57,9 +65,10 @@ float SphereMarching(
 }
 \end{lstlisting}
 \newpage
-Como ya se ha comentado antes, este algoritmo es aplicado para cada pixel de la pantalla, si el valor devuelto por el \textit{Marcher} es distinto a un \textit{fallo}, sabremos que estamos muy próximos a una isosuperficie y así, dibujarlo. En caso contrario, lo consideraremos fondo. Con la distancia devuelta, podemos posicionarlo en nuestra escena ya que el valor devuelto es la distancia aproximada a la isosuperficie, por lo que, el vector a dicho punto, aproximado, será:
-\[ \Vec{p} = \Vec{ojo} + distancia \cdot  \Vec{direccion} \]
-Como ya hemos comentado, \textit{Shadertoy} nos ofrece un entorno para trabajar, además de un pequeño código de ejemplo, el cual modificaremos para adaptarlo al \textit{Marcher}.
+Este algoritmo es implementado en un \textit{shader}, aplicado para cada pixel de nuestra pantalla. En el caso  de que el algoritmo no devuelva \enquote{fallo}, podremos calcular a partir del valor devuelto \(d_n<MAXIMO\) el punto aproximado sobre la superficie, tal que:
+\[ \Vec{p} = \Vec{ojo} + d_n \cdot  \Vec{direccion} \]
+Conociendo los puntos de una superficie, podremos añadir información a la escena, como por ejemplo, un modelo de iluminación o materiales y texturas.\\\\
+En \textit{Shadertoy}, crearemos un nuevo \textit{shader} donde se nos ofrecerá un entorno para trabajar y un código de ejemplo:
 \begin{lstlisting}
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
@@ -73,13 +82,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     fragColor = vec4(col,1.0);
 }
 \end{lstlisting}
-Podemos observar tres variables importantes, que se han comentado anteriormente.
+Observamos en el código tres variables enlazadas\ref{sec:enlaces} importante:
 \begin{enumerate}
-    \item \textit{fragColor}. Se trata de una variable de \textbf{salida}, es el valor del pixel, es decir, una 4-upla \textit{rgba} de tipo \textit{vec4}. Cada elemento está en el intervalo \([0,1]\).
-    \item \textit{fragCoord}. Es una variable de \textbf{entrada}, la coordenada del pixel en pantalla, donde la primera componente representa la coordenada \(x\) y la segunda, la \(y\).
-    \item \textit{iResolution}. Contiene el ancho y el alto de la pantalla.
+    \item \textbf{out vec4 \textit{fragColor}}. Enlaza la variable con el valor del pixel, una 4-upla, \textit{rgba}, cuyas componentes están en el intervalo \([0,1]\).
+    \item \textbf{in vec2 \textit{fragCoord}}. Contiene la posición de la coordenada del pixel en pantalla, donde la primera componente representa la coordenada \(x\) y la segunda, la \(y\).
+    \item \textbf{uniform vec2 \textit{iResolution}}. Se trata de una variable global que contiene información de las dimensiones en píxeles del \textit{viewport}, su primera componente, el ancho y su segunda, el alto.
 \end{enumerate}
-La pantalla en realidad nos referimos al donde se dibuja el resultado.
+Vamos a modificar el ejemplo anterior: Situraremos la pantalla en la escena, posicionandola centrada en las coordenadas \((0,0,0)\) y preservando la relación de aspecto.  Asignaremos la posición de la cámara u ojo y calcularemos la dirección del ojo al pixel como dirección del rayo. Aplicaremos el algoritmo \textit{spheremarching} desde el ojo en la dirección calculada, en caso de devolver un fallo, utilizaremos el color negro, por el contrario, el blanco.
 \newpage
 \begin{lstlisting}
 void mainImage(
@@ -87,7 +96,7 @@ void mainImage(
     in vec2 fragCoord
 ){
     // Normalizamos las coordendas y las reescalamos para mantener el ratio de aspecto. Transladamos al centro de la pantalla.
-    vec2 uv = (fragCoord - iResolution.xy * 0.5) / min(iResolution.y, iResolution.x);
+    vec2 uv = (fragCoord - iResolution.xy*.5) / min(iResolution.y, iResolution.x);
     // Definimos el ojo y la pantalla, que se encuentra en nuestra escena.
     vec3 ojo = vec3(0.0, 0.0, -1.0);
     vec3 pantalla = vec3(uv, 0.0);
@@ -109,18 +118,16 @@ void mainImage(
 }
 \end{lstlisting}
 \newpage
-Si intentáramos ejecutar este código, veríamos que no compilaría, esto es debido a que no hemos definido aún nuestra escena. La función \textit{escena\_sdf} que se encuentra dentro de la función \textit{SphereMarching}, contiene nuestra escena como una \textit{Funcíon de distancia con Signo}, vamos a definir la escena más simple, aunque en capítulos posteriores, veremos formas de crear nuestras propias escenas y funciones de distancia con signo.
+La función \textit{escena\_sdf}, que se encuentra dentro de la función \textit{SphereMarching}, contiene la escena como una \textit{función de distancia con signo}. Veremos en el sexto capítulo\ref{ch:fds}, como crear nuestras escenas. Aunque, para probar nuestro algoritmo, vamos a definir una escena muy simple:
 \begin{lstlisting}
 /* 
-No vamos a entrar, aún, en como se define una escena mediante Funciones de Distancia con Signo.
-Aunque el siguiente código, representa:
 Una esfera en el la coordenada (0,0,0) de radio 0.2 unidades.
 */
 float escena_sdf(vec3 p){
     return length(p - vec3(0.0)) - 0.2;
 }
 \end{lstlisting}
-Veamos una pequeña pincelada de como se ha definido esta función. Se calcula el módulo del punto \(\Vec{p}\), esto define una \textit{Función de Distancia con Signo} positiva y cuya isosuperficie es únicamente un punto, \(S=\{(0,0,0)\}\).\\Es fácil observar que si restamos \(r\) al la distancia, estamos creando una isosuperficie esférica de radio \(r\). Aquellos puntos cuya distancias valen \(r\), acabarán anulándose y definiendo la \textit{isosuperficie}. Las distancias inferiores, tomarán valores negativos y los superiores, positivos.
+Demos una pincelada de como se ha definido esta función, se calcula el módulo del punto \(\Vec{p}\), esto define una \textit{Función de Distancia} y cuya isosuperficie es únicamente un punto, \(S=\{(0,0,0)\}\), si a cada punto, restáramos \(r\) al la distancia, creamos una isosuperficie esférica de radio \(r\). Ya que, aquellos puntos cuya distancias valen \(r\), acabarán anulándose y definiendo una \textit{función de distancia con signo}.
 \[S=\{\Vec{q} \in \mathbb{R}^3 / SDFEsfera_r(\Vec{q})=0\}\]
 \[ SDFEsfera_r(\Vec{p})=\vert\vert\Vec{p}\vert\vert - r  \]
 \begin{figure}[H]
@@ -130,6 +137,5 @@ Veamos una pequeña pincelada de como se ha definido esta función. Se calcula e
   \caption{"Hola mundo" del algoritmo \textit{SDF}.}
 \end{figure}
 
-% https://www.shadertoy.com/view/wtsfDn
-
-Al solo utilizar dos colores, blanco y negro, no tenemos sensación de profundidad, esto se conseguirá utilizando un modelo de iluminación, que incluyen luces y sombras.
+Enlace del ejemplo \url{https://www.shadertoy.com/view/wtsfDn}\\\\
+Al solo utilizar dos colores, blanco y negro, no tenemos sensación de profundidad, esto se conseguirá definiendo un modelo de iluminación.

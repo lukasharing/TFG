@@ -1,5 +1,5 @@
-\chapter{Materiales}
-En este último capítulo vamos a ver como dar color y texturas a los elementos de nuestra escena. Identificaremos cada elemento asignando un entero positivo \(id \in \mathbb{N}\) que será devuelto junto con la distancia a este objeto, es decir, vamos a devolver un \textit{vec2} cuya componente \enquote{x} será la distancia y cuya componente \enquote{y}, el identificador \(id\). Asignaremos la constante \(id=-1\) cuando no hemos trazado ningún objeto.\\\\
+\chapter{Materiales\label{ch:materiales}}
+En este último capítulo, vamos a ver como dar color y texturas a los elementos de nuestra escena. Identificaremos cada elemento asignando un entero positivo \(id \in \mathbb{N}\) que será devuelto junto con la distancia a este objeto, es decir, vamos a devolver un \textit{vec2} cuya componente \enquote{x} será la distancia y cuya componente \enquote{y}, el identificador \(id\). Asignaremos la constante \(id=-1\) cuando no se ha trazado ningún objeto.\\\\
 En primer luegar, vamos a modificar el \textit{Marcher} para que este pueda devolver ambos valores:
 
 \begin{lstlisting}
@@ -26,7 +26,7 @@ vec2 SphereMarching(vec3 ojo, vec3 direccion){
 }
 \end{lstlisting}
 
-El vector devuelto con nombre \textit{info} toma los valores directamente de la escena, por lo que vamos a modificar el esquema de nuestra función \enquote{\textit{escena\_sdf}}, este ahora devolverá la distancia más cercana a un objeto y su identificador. El esquema será el siguiente:
+El vector devuelto con nombre \textit{info}, toma los valores directamente de la escena, por lo que vamos a modificar el esquema de nuestra función \enquote{\textit{escena\_sdf}}, este ahora devolverá la distancia más cercana a un objeto y su identificador. El esquema será el siguiente:
 
 \begin{lstlisting}
 vec2 escena_sdf(vec3 p){
@@ -35,9 +35,9 @@ vec2 escena_sdf(vec3 p){
     float min_dist = MAXIMO;
     
     // El esquema es el siguiente para cada figura de nuestra escena.
-    // 1. Creamos nuestra primera figura.
+    // 1.Creamos nuestra primera figura.
     float sdf_0 = ....;
-    // 2. Comprobamos que esta figura es la más cercana encontrada hasta el momento.
+    // 2.Comprobamos que esta figura es la más cercana encontrada hasta el momento.
     if(sdf_0 < min_dist){
         // 2.1 En caso afirmativo, actualizamos los valores.
         // Asignamos el id de esta figura.
@@ -58,28 +58,7 @@ vec2 escena_sdf(vec3 p){
 }
 \end{lstlisting}
 
-Al devolver ahora dos componentes, debemos modificar todas las funciones que llaman a esta función, encontramos el cálculo de la normal:
-
-\begin{lstlisting}
-// En escena_sdf, tomamos la primera componente.
-vec3 Normal(vec3 rayo){
-     // f(x1,...,xn)
-     float fxyz = escena_sdf(rayo).x;
-     // f(x1,..,xi+h,xn)
-     float fxhyz = escena_sdf(rayo + vec3(EPSILON, 0.0, 0.0)).x;
-     float fxyhz = escena_sdf(rayo + vec3(0.0, EPSILON, 0.0)).x;
-     float fxyzh = escena_sdf(rayo + vec3(0.0, 0.0, EPSILON)).x;
-     
-     // Utilizamos la definicion de derivadas parciales para devolver el gradiente, que se trata de la normal de la isosuperficie.
-     return vec3(
-         (fxhyz - fxyz) / EPSILON,
-         (fxyhz - fxyz) / EPSILON,
-         (fxyzh - fxyz) / EPSILON
-     );
-}
-\end{lstlisting}
-
-Pongamos como ejemplo una sección de un toro y una esfera, el código y apliquemos el esquema utilizado para \enquote{\textit{escena\_sdf}}. El resultado:
+Al devolver ahora dos componentes, debemos modificar todas las funciones que hacían uso de esta función, donde encontramos \enquote{Normal} y \enquote{ModeloIluminacion}. Vamos a utilizar el valor devuelto, asignar un material, para ello, vamos a crear una nueva función \enquote{obtenerMaterial} Pongamos como ejemplo una sección de un toro y una esfera, el código y apliquemos el esquema utilizado para \enquote{\textit{escena\_sdf}}. El resultado:
 
 \begin{lstlisting}
 vec2 escena_sdf(vec3 p){
@@ -121,4 +100,4 @@ vec2 escena_sdf(vec3 p){
   \caption{Materiales asignados a las distintas figuras.}
 \end{figure}
 
-% https://www.shadertoy.com/view/wlBBRR
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/wlBBRR}

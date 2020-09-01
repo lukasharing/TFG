@@ -2,20 +2,31 @@
 
 \chapter*{Resumen}
 
-\blindtext
+Gracias al rápido avance tecnológico y la evolución de la unidad de procesamiento de gráficos o \textit{GPU}, podemos experimentar con técnicas propuestas durante el siglo pasado, que eran poco eficientes debido al hardware del momento. El objetivo de este trabajo es hacer uso de este avance para probar nuevas técnicas de creación de escenas, utilizando una clase de funciones, conocidas como \textit{Funciones de distancia con signo} o \textit{FDS}\ref{ch:fds}. Desarrollaremos el proyecto en el lenguaje \textit{GLSL}\ref{ch:glsl}, donde veremos alguno de los nuevos tipos y operadores ya que es su sintaxis es similar a C. Las escenas creadas a partir de las \textit{Funciones de distancia con signo} son completamente analíticas, es decir, exactas, que a diferencia de otras técnicas que utilizan vértices. Por ejemplo, estas otras técnicas generan una esfera aproximada por un poliedro geodésico\footnote{Se trata de un poliedro convexo hecho de triángulos, el algoritmo: \url{https://stackoverflow.com/a/17795311}}. Para el renderizado de la escena tridimensional, en el cuarto capítulo, presentaremos un algoritimo con el nombre de \enquote{\textit{Spheremarcher}}\ref{sec:spheremarching}.
 
 \vspace{0.7cm}
 
 \noindent{
 	\spacedlowsmallcaps{Palabras clave}
-	\textit{software libre}
+	\textit{gráficos}, \textit{marcher}, \textit{GLSL}, \textit{modelo de iluminación}
 }
 
 \cleardoublepage
 
 \chapter*{Summary}
 
-\blindtext
+\begin{otherlanguage}{english}
+In this project we are going to present a new graphic technique in thanks to the advance in technology and the continuously increasing of the efficiency of the GPU. We are going to divide it into five important chapters.
+
+\paragraph{Chapter 1} In this first chapter we are going to present the mathematical foundation used to create an analytical scene for our project. We will give an introduction to the \textit{signed distance functions} and dive into them in later chapters. Because we are working with analytical scenes, we will present a theorem to calculate surface normal that will be in the Light Model. Finally, we will give two mathematical concepts: \textit{homeomorphism} and \textit{homotopies}, commonly used in textures.
+
+\paragraph{Chapter 2} In this second chapter, we will present the language we will use through the whole project, called \textit{GLSL}. The syntax of this language is similar to C, we will be presenting some new mathematical types and primitive functions. Each section will also have tips and code examples.
+
+\paragraph{Chapter 3} In this chapter we will analyze the analytical algorithm used to approximate a sceene that is created using \textit{signed distance functions}. We will be presenting the online enviroment used to create this project, called \textit{Shadertoy}, designed by Iñígo Quilez and Pol Jeremias in 2013.
+
+\paragraph{Chapter 4} In this chapter, we will be presenting the basic operators to create an Illumination Model. We are going to implement an Illumination Model designed in the 70's, called Phong's Model. This model splits the light intensity into three different ones: ambient intensity, that affects with a constant value at the surface everywhere; diffuse intensity, dependent to the surface curvature and the light direction; finally, specular intensity is calculated by the reflection of the light from the surface to the eye.
+
+\paragraph{Chapter 4} In this chapter we will be covering the main theme of this project, that are indispensable for the creationg of a sceene. \textit{Signed distance functions} are a special type of functions that returns a signed distance to a surface or perimetre, when the distance is positive, we would say that we are outside the sceene, when it is negative, we will be inside an object. The zeros will represent the surface but because we will be using an numerical 
 
 \vspace{0.7cm}
 \noindent{
@@ -23,6 +34,8 @@
 	\textit{open source}, 
 	\textit{floss}
 }
+
+\end{otherlanguage}
 
 \cleardoublepage
 %\thispagestyle{empty}

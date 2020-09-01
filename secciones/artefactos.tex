@@ -51,36 +51,36 @@ Veamos el efecto que implica este cambio sobre la deformación vista en \fullref
   \caption{Comparativa de los cambios realizados en el \textit{Marcher}. A la izquierda, el \textit{Marcher} original, a la derecha, el marcher con \(\vert d_{n+1}\vert < \epsilon\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/ttsBDs
-% 
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/ttsBDs}
 
 \section{Sobreestimación fuera de la superficie}
 Este segundo caso ocurre cuando la deformación aplicada hace que el rayo atraviese la superficie, como ocurre en el ejemplo \textit{(B)}.
 Esta sobreestimación afecta considerablemente a la eficiencia del \textit{Marcher}. La solución es escalar en todo momento la bola trazada, obligando a que la bola deformada no pueda contener ningún punto, es decir, sobreestimar. Este cambio nos obligará a utilizar un mayor número de iteraciones, de forma proporcional, para alcanzar la superficie.
-\[d'_{n+1}=\left(\sum^{n-1}_{i=0} d_{i}\right) + f(\Vec{rayo})\cdot k \leq d_{n+1}\]
-Donde \(\Vec{rayo}=\Vec{ojo}+\Vec{direccion}\cdot d'_n\) hace referencia al vector lanzado desde el ojo hasta el pixel; \(f\) es nuestra escena; \(k\in[0,1]\) es un factor de escalado de la bola y proporcional al nuevo número de iteraciones. Además, puede ayudar, en ciertas situaciones, a resolver el problema de la \textit{sobreestimación dentro de la superficie}.
+\[d'_{n}=d_{n-1} + f(\Vec{p}_{n-1})\cdot k \leq d_{n}\]
+Donde \(f\) es nuestra escena; \(k\in[0,1]\) es un factor de escalado de la bola y proporcional al nuevo número de iteraciones. Además, puede ayudar, en ciertas situaciones, a resolver el problema de la \textit{sobreestimación dentro de la superficie}.
 
 \begin{lstlisting}
 #define FACTOR_SOBREESTIMACION k
 float SphereMarching(
-    vec3 ojo, 
-    vec3 direccion
+    in vec3 ojo,
+    in vec3 direccion, 
+    float distancia_plano
 ){
     float distancia = 0.0;
     for(int i = 0; i < PASOS; ++i){
-        vec3 p = ojo + direccion * distancia;
-        // Escalado del la bola
-        float radio = escena_sdf(p) * FACTOR_SOBREESTIMACION;
+        vec3 rayo = ojo + direccion * distancia;
+        // Escalamos el radio de la esfera
+        float radio = escena_sdf(rayo) * FACTOR_SOBREESTIMACION;
         if(abs(radio) < EPSILON){
             return distancia;
         }
         distancia += radio;
-        if(distancia >= MAXIMO) break;
+        if(distancia > distancia_plano)break;
     }
-    return MAXIMO;
+    return distancia_plano;
 }
 \end{lstlisting}
-Veamos como afecta el factor \(k\) al trazado de la escena por el \textit{Marcher} modificado.
+Efecto de distintos factores \(k\) al trazado de la escena por el \textit{Marcher}.
 
 \begin{figure}[H]
   \centering
@@ -90,10 +90,11 @@ Veamos como afecta el factor \(k\) al trazado de la escena por el \textit{Marche
   \subfloat[k=0.75]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_75.png}\label{fig:twist75}}
   \hfill
   \subfloat[k=0.50]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_50.png}\label{fig:twist50}}
-  \caption{\(k\in\{1, 0.75, 0.5\}\) respectivamente sobre el \textit{Marcher} anterior}
+  \caption{\(k\in\{1, 0.75, 0.5\}\) respectivamente sobre el \textit{Marcher}}
 \end{figure}
 
-% https://www.shadertoy.com/view/3tBBRR
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/3tBBRR}
 
 %Vemos que la figura es \enquote{exacta} con \(k=0.5\) si observamos la esquina inferior izquierda de la tapadera. Este factor, o reducción de la esfera a la mitad, va a provocar que se requiera el doble de iteraciones para trazar una escena.
 

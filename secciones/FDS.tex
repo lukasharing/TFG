@@ -1,5 +1,5 @@
-\chapter{Funciones de Distancia con Signo}
-\section{Introducción}
+\chapter{Funciones de Distancia con Signo\label{ch:fds}}
+%\section{Introducción}
 Hemos presentado anteriomente las funciones de distancia con signo como definición matemática. Ahora debemos hacernos las siguientes preguntas: ¿Cómo podemos definir \textit{funciones de distancia con signo}?, ¿qué tipo de funciones existen? y ¿qué operadores hay?.
 
 \begin{definition}
@@ -7,10 +7,16 @@ Una función de distancia con signo, se dice exacta si está definido sobre la m
 \end{definition}
 
 Vamos a definir algunas \textit{funciones de distancia con signo exactas}, que las denominaremos: \enquote{\textit{primitivas}}. En esta sección veremos primitivas sobre \(\mathbb{R}^2 \text{ y }\mathbb{R}^3\), definiéndolas centradas en el origen. Veremos también operadores para aplicar transformaciones sobre estas, como por ejemplo la traslación y la rotación.\\\\
-Se ha tomado como referencia algunas primitivas propuestas por el autor, \textit{Iñigo Quilez} en su blog \enquote{\textit{Iquilezles} - Distance Functions} \url{https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm}. Aunque en su blog no se especifica ninguna demostración, se han presentado algunas demostraciones personales.
+Se ha tomado como referencia algunas primitivas propuestas por el autor, \textit{Iñigo Quilez} en su blog \enquote{\textit{Iquilezles} - Distance Functions} \url{https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm}. Las demostraciones de las funciones presentadas en este trabajo son de propia cosecha.
 
 \section{Primitivas sobre \(\mathbb{R}^2\)}
-En primer lugar, veremos las primitivas en \(\mathbb{R}^2\) que serán fundamentales para definir las de una dimensión superior, \(\mathbb{R}^3\). Las visualizaremos utilizando la plataforma \textit{Shadertoy}. Utilizaremos el color rojo para indicar el interior de la figura, el color azul para el exterior y el color blanco para indicar que está sobre el isoperímetro con \(\epsilon=0,01\). Crearemos líneas para ver la métrica en los diferentes puntos.
+En primer lugar, veremos las primitivas en \(\mathbb{R}^2\) que serán fundamentales para definir las de una dimensión superior, \(\mathbb{R}^3\). Las visualizaremos utilizando la plataforma \textit{Shadertoy}. Vamos a crear un pequeño código que utilizaremos para presentar estas funciones:
+\begin{enumerate}
+    \item El color rojo indicará el interior de la figura o distancias negativas.
+    \item El color azul, utilizado para el exterior de la figura o distancias positivas.
+    \item El color blanco para indicar que está sobre el isoperímetro con un margen de \(\epsilon=0,01\), para que esta sea visible.
+\end{enumerate}
+Utilizaremos la parte fraccional, utilizando el operador \enquote{fract} de \textit{GLSL}, de las distancias para crear líneas que representarán la métrica utilizada, si la distancia entre todos los pares consecutivos son iguales, podríamos asegurar que la métrica es constante y no hay deformaciones. El código utilizado:
 \begin{lstlisting}
 #define EPSILON 0.01
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
@@ -48,10 +54,10 @@ float SDFCircunsferencia(vec2 p, float r){
   \caption{Circunsferencia FDS radio \(0.3\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/WtXfRj
+El ejemplo: \url{https://www.shadertoy.com/view/WtXfRj}
 
 \subsection{Rectángulo exacto}
-Para calcular de forma exacta esta función vamos a definir dos operadores sobre los vectores:
+Para calcular de forma exacta esta función, vamos a definir dos operadores sobre los vectores:
 \[\vert(x_0,x_1,\dots,x_n)\vert=(\vert x_0\vert,\vert x_1\vert,\dots,\vert x_n \vert)\]
 \[\max\left((x_0,x_1,\dots,x_n), k\right)=(\max( x_0, k), \max(x_1, k),\dots, \max(x_n, k))\]
 El operador valor absoluto es útil ya que reduce el problema a un único cuadrante, que representa un cuarto de la figura original. Las medidas serán la mitad de la original \(\Vec{s}\), en forma vectorial:
@@ -60,7 +66,7 @@ Situándonos en el primer cuadrante, dividimos el problema en 4 subproblemas:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/proofs/proof_rectangle.png}\label{fig:subproblem}
+  \includegraphics[width=0.8\textwidth]{secciones/imagenes/sdf/proofs/proof_rectangle.png}\label{fig:subproblem}
   \caption{División del rectángulo en 4 regiones o subproblemas.}
 \end{figure}
 Para cada subproblema, vamos a preservar la métrica euclídea, posicionando \(\vert\Vec{p}\vert=\vert(x,y)\vert=(\vert x\vert, \vert y \vert)\) en cada una de las regiones.
@@ -72,9 +78,9 @@ Para cada subproblema, vamos a preservar la métrica euclídea, posicionando \(\
     \[argmax(\Vec{a})=min(max(\Vec{a}_x, \Vec{a}_y), 0)\]
     Haciendo uso de este, la distancia interior será: \(argmax(\vert\Vec{p}\vert-\Vec{s'})\).
 \end{enumerate}
-Podríamos crear una función a trozos y utilizar condicionales para cada región, pero queremos que además de ser exacto, también sea eficiente, en general, las condiciones suelen ser lentas. Vamos a mirar la relación entre las diferentes regiones. Por ejemplo, observamos que la \textbf{Región 3} contiene en su ecuación a la \textbf{Región 1 y 2}, veamos casos particulares: cuando \(\Delta \vert x\vert =0\longrightarrow \sqrt{\left(\vert \Delta y\vert\right)^2} = \Delta \vert y\vert\), que concuerda con la \textbf{Región 2}, haciendo que la \textbf{Región 2 y 3} queden unificadas; Para la \textbf{Región 1 y 3}, de manera equivalente, tenemos \(\Delta \vert y\vert =0\longrightarrow \sqrt{\left(\vert \Delta x\vert\right)^2} = \Delta \vert x\vert\), vemos que la \textbf{región 3} recoge los casos para las \textbf{Regiones 1, 2 y 3}, por lo que la distancia en el exterior será
+Podríamos crear una función a trozos y utilizar condicionales para cada región, pero queremos que además de ser exacto, también sea eficiente, en general, las condiciones suelen ser lentas. Vamos a mirar la relación entre las diferentes regiones. Por ejemplo, observamos que la \textbf{Región 3} contiene en su ecuación a la \textbf{Región 1 y 2}, veamos casos particulares: cuando \(\Delta \vert x\vert =0\longrightarrow \sqrt{\left(\Delta\vert y\vert\right)^2} = \Delta \vert y\vert\), que concuerda con la \textbf{Región 2}, haciendo que la \textbf{Región 2 y 3} queden unificadas; Para la \textbf{Región 1 y 3}, de manera equivalente, tenemos \(\Delta \vert y\vert =0\longrightarrow \sqrt{\left(\Delta\vert x\vert\right)^2} = \Delta \vert x\vert\), vemos que la \textbf{Región 3} recoge los casos para las \textbf{Regiones 1, 2 y 3}, por lo que la distancia en el exterior será
 \[d_{exterior}=\vert\vert\max\left(\vert\Vec{p}\vert-\Vec{s'},0\right)\vert\vert\]
-Para terminar, observamos que estamos en la \textbf{Región 4} si \(\Delta\vert x\vert \text{ y } \Delta\vert y\vert<0\), simplificándose \(d_{exterior} = 0\), por lo que bastará sumar la distancia de esta región para obtener la ecuación exacta:
+Para terminar, observamos que estamos en la \textbf{Región 4}, si \(\Delta\vert x\vert< 0 \) y \(\Delta\vert y\vert<0\), simplificándose \(d_{exterior} = 0\), por lo que bastará sumar la distancia de esta región para obtener la ecuación exacta:
 \[SDFRectangulo_{\Vec{s'}}(\Vec{p})= \vert\vert\max\left(\vert\Vec{p}\vert-\Vec{s'},0\right)\vert\vert + argmax(\vert \Vec{p}\vert - {s'})\]
 \begin{lstlisting}
 // Rectángulo Exacto
@@ -93,8 +99,7 @@ float SDFRectangulo(vec2 p, vec2 s){
   \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/2d/sdf_rectangulo.png}\label{fig:rectaangulo}
   \caption{Rectángulo FDS de dimensiones \(\Vec{s'}=(0.4, 0.2)\)}
 \end{figure}
-
-% https://www.shadertoy.com/view/3lXBR2
+Enlace del ejemplo: \url{https://www.shadertoy.com/view/3lXBR2}
 
 \subsection{Recta exacta}
 Se puede definir una recta de forma algebráica utilizando un punto y un vector director \(\Vec{n}\), para simplificar, tomaremos como punto el origen. Utilizaremos el operador de proyección\footnote{Este operador se demuestra a partir de la definición del producto escalar. Un ejemplo lo encontramos en el siguiente enlace:  \url{https://en.m.wikibooks.org/wiki/Linear_Algebra/Orthogonal_Projection_Onto_a_Line}}
@@ -131,7 +136,7 @@ float SDFRecta(vec2 p, vec2 a, vec2 b){
   \caption{FDS Recta que pasa por \(\Vec{a}=(0.2, 0.2), \Vec{b}=(0.0, 0.1)\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/ttlBzX
+Enlace del ejemplo: \url{https://www.shadertoy.com/view/ttlBzX}
 
 \subsection{Segmento exacto}
 Se trata de un caso particular del operador proyección entre dos vectores \(\Vec{a}, \Vec{b}\). 
@@ -159,10 +164,10 @@ float SDFSegmento(vec2 p, vec2 a, vec2 b){
   \caption{FDS Recta que pasa por \(\Vec{a}=(-0.2, -0.2), \Vec{b}=(0.3, 0.4)\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/wllBRl
+Enlace del ejemplo: \url{https://www.shadertoy.com/view/wllBRl}
 
-Existen infinitas \textit{funciones de distancia con signo exactas}, aunque muchas no han sido propuestas debido a su complejidad. Vamos a presentar operadores que nos van a ayudar a transformar estas funciones, resultando de otras que pueden o no preservar la \textit{exactitud}. La exactitud provocará modificaciones en algunos de los algoritmos, principalmente sobre \(\mathbb{R}^3\).\\\\
-Podemos encontrar más \textit{funciones de distancia con signo exactas} en el siguiente enlace: \url{https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm}, aunque no sus demostraciones. Muchas de estas pueden ser demostradas utilizando las propiedades y operadores vistos en los apartados anteriores, por ejemplo, la definición exacta del triángulo hace uso de dos segmentos para dos de sus lados conectados por una arista y las coordenadas baricéntricas\footnote{El sistema de coordenadas baricéntrico se generar a partir del baricentro, es decir, el punto de corte de las tres rectas que pasan por el centro de un lado y por el vértice opuesto. Podemos encontrar la demostración de la distancia en el siguiente enlace: \url{https://mathoverflow.net/a/36669}}.
+Existen infinitas \textit{funciones de distancia con signo exactas} y aún quedan muchas por definir. Vamos a presentar operadores que nos van a ayudar a transformar estas funciones, resultando de otras que pueden o no preservar la \textit{exactitud}.\\\\
+Algunas \textit{funciones de distancia con signo} no presentadas aquí y que podemos encontrar en el blog de \textit{Íñigo Quilez}, pueden ser demostradas utilizando las propiedades y operadores vistos en los apartados anteriores, por ejemplo, la definición exacta del triángulo hace uso de dos segmentos para dos de sus lados conectados por una arista y las coordenadas baricéntricas\footnote{El sistema de coordenadas baricéntrico se generar a partir del baricentro, es decir, el punto de corte de las tres rectas que pasan por el centro de un lado y por el vértice opuesto. Podemos encontrar la demostración de la distancia en el siguiente enlace: \url{https://mathoverflow.net/a/36669}}.
 
 \section{Operadores sobre \(\mathbb{R}^2\)}
 Vamos a ver operadores imprescindibles para poder manipular nuestra escena, además de poder crear nuevas \textit{funciones de distancia con signo exactas}. Estos operadores pueden preservar o no la exactitud de nuestras funciones, aquellos operadores que la preserven, los llamaremos \textit{isometrías}.
@@ -171,14 +176,15 @@ Vamos a ver operadores imprescindibles para poder manipular nuestra escena, adem
 Una aplicación \(g\) sobre dos espacios métricos se dice que es \textit{isométrica} si se conservan la distancia entre todos los puntos antes y después de su aplicación. \[\forall \Vec{v},\Vec{w} \in\mathbb{R}^2, d(\Vec{v},\Vec{w})=d(g(\Vec{v}),g(\Vec{w}))\]
 \end{definition}
 
-En secciones anteriores hemos visto por qué vamos a trabajar sobre la métrica euclídea, esto implicará que la función de distancia \(d\), sea  \(d(\Vec{v},\Vec{w})=d((x,y),(z,w))=\vert\vert \Vec{v}-\Vec{w}\vert\vert=\sqrt{(x-z)^2+(y-w)^2}\). En la siguiente sección veremos tres \textit{isometrías}: la traslación, la rotación y la simetría sobre una recta.
+En secciones anteriores hemos visto por qué vamos a trabajar sobre la métrica euclídea, esto implicará que la función de distancia \(d\), sea  \(d(\Vec{v},\Vec{w})=d((x,y),(z,w))=\vert\vert \Vec{v}-\Vec{w}\vert\vert=\sqrt{(x-z)^2+(y-w)^2}\). Veremos tres \textit{isometrías}: la traslación, la rotación y la simetría sobre una recta.
 
 \subsection{Operador de traslación}
 Definimos la traslación como el operador donde un punto \(\Vec{p}\) es desplazado por un vector \(\Vec{t}\), preservando las características:
 \[\text{traslacion}(\Vec{p},\Vec{t})=\Vec{p}\pm\Vec{t}\]
 Vamos a demostrar que la traslación es una isometría, \(\forall \Vec{v},\Vec{w}\in\mathbb{R}^2\):
 \[d(f(\Vec{v}), f(\Vec{w}))=d(\Vec{v}\pm\Vec{t}, \Vec{w}\pm\Vec{t})=\vert\vert (\Vec{v}\pm\Vec{t})-(\Vec{w}\pm\Vec{t})\vert\vert=\vert\vert \Vec{v}-\Vec{w}\vert\vert=d(\Vec{v}, \Vec{w})\]
-Este es uno de los motivos por el cual se ha definido las \textit{funciones de distancia con signo} sobre el origen. Por fin, podemos trasladarlo a cualquier parte de nuestra escena, en código:
+Este es uno de los motivos por el cual se ha definido las \textit{funciones de distancia con signo} sobre el origen. Ahora, podemos trasladar una función a cualquier parte de nuestra escena, en código:
+\newpage
 \begin{lstlisting}
 float escena_sdf(vec2 p){
     // Trasladamos el vector p hacia 0.1 izquierda y 0.2 a la derecha.
@@ -196,7 +202,8 @@ Hemos realizado una resta en vez de una suma para trasladarlo a la posición des
   \caption{Traslación FDS \(\Vec{t}=(0.1, 0.2)\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/ttXfWS
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/ttXfWS}
 
 \subsection{Operador de rotación}
 El segundo operador que vamos a presentar es el operador de rotación. Se define como la matriz de rotación\footnote{Esta matriz es definida por el mapeo de coordenadas polares y la linearidad. La demostración la encontramos en el siguiente enlace: \url{https://math.stackexchange.com/a/53181}}, donde \(\alpha\) es el ángulo de rotación en radianes y es una matriz ortogonal\footnote{Una matriz se dice ortogonal, si y solo si, \(A\cdot A^t=I\). La demostración de que la matriz de rotación es ortogonal:  \url{https://math.stackexchange.com/a/2471175}}:
@@ -228,8 +235,8 @@ Resultando,
 Veamos que el operador también es una \textit{isometría}, \(\forall \Vec{v},\Vec{w}\in\mathbb{R}^2\):
 \[d(f(\Vec{v}), f(\Vec{w}))=d(\Vec{v}\cdot \text{rot}(\alpha), \Vec{w}\cdot \text{rot}(\alpha))=\]\[\vert\vert \Vec{v}\cdot \text{rot}(\alpha)- \Vec{w}\cdot \text{rot}(\alpha)\vert\vert=\vert\vert(\Vec{v}-\Vec{w})\cdot \text{rot}(\alpha)\vert\vert\]
 Como \(\text{rot}(\alpha)\) es ortogonal: \(\vert\vert A\cdot\text{rot}(\alpha)\vert\vert=\vert\vert A\vert\vert\).\footnote{La demostración de esta propiedad requiere un alto conocimiento matemático, como curiosidad, encontramos la demostración en el siguiente enlace: \url{https://math.stackexchange.com/a/2245861}}
-\[d(f(\Vec{v}), f(\Vec{w}))=\vert\vert(\Vec{v}-\Vec{w})\cdot \text{rot}(\alpha)\vert\vert=\vert\vert\Vec{v}-\Vec{w})\vert\vert=d(\Vec{v},\Vec{w})\]
-En código,
+\[d(f(\Vec{v}), f(\Vec{w}))=\vert\vert(\Vec{v}-\Vec{w})\cdot \text{rot}(\alpha)\vert\vert=\vert\vert\Vec{v}-\Vec{w}\vert\vert=d(\Vec{v},\Vec{w})\]
+En código:
 \begin{lstlisting}
 #define PI 3.1415
 mat2 rot(float a){
@@ -250,10 +257,11 @@ float escena_sdf(vec2 p){
   \centering
   \captionsetup{justification=centering}%,margin=2cm
   \includegraphics[width=1.0\textwidth]{secciones/imagenes/sdf/2d/sdf_rotacion.png}\label{fig:rotacion}
-  \caption{Rectángulo (cuadrado) FDS con rotación \(\alpha=\dfrac{\pi}{4}\)}
+  \caption{Rectángulo \(\Vec{s}=\Vec{0.3}\) FDS con rotación \(\alpha=\dfrac{\pi}{4}\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/wlXfDS
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/wlXfDS}
 
 \subsection{Operador de simetría}
 La simetría traslada los puntos que están sobre un lado de la recta hasta el otro lado tal que estos equidisten.\\\\ Dado un vector director \(\Vec{n}\in\mathbb{R}^2\) de una recta que pasa por el \((0,0)\) y utilizando el operador de proyección de cualquier punto \(\Vec{p}\in\mathbb{R}^2\) sobre \(\Vec{n}\). La simetría consiste en trasladar \(\Vec{p}\) hacia el otro lado de la recta en dirección al punto proyectado.
@@ -263,9 +271,9 @@ Para cualquier recta formada por dos puntos \(\Vec{a}, \Vec{b}\), el operador de
 Veamos algunos casos particulares, los definidos sobre los ejes:\\\\
 Sobre el eje \(X\), \(\Vec{n}=(1,0)\), definimos el operador de simetría sobre el eje x como
 \[\text{simetria}_{X}(\Vec{p})=\text{simetria}_{\Vec{n}}(\Vec{p})=(-x, y)\]
-De manera equivalente para el eje \(Y\):
+De manera equivalente para el eje \(Y\), \(\Vec{n}=(0,1)\):
 \[\text{simetria}_{Y}(\Vec{p})=\text{simetria}_{\Vec{n}}(\Vec{p})=(x, -y)\]
-Se deja una cuestión abierta sobre estos dos últimos operadores de simetría. ¿Qué ocurriría si \enquote{dobláramos} el eje y?, es decir:
+Se deja una cuestión abierta sobre estos dos últimos operadores de simetría, ¿qué ocurriría si \enquote{dobláramos} el eje y?, es decir:
 \[\text{simetria}_{\vert Y\vert}(\Vec{p})=\text{simetria}_{\Vec{n}}(\Vec{p})=(x, -\vert y\vert)\]
 
 
@@ -281,7 +289,7 @@ vec2 simetria(vec2 p, vec2 a, vec2 b){
     return a + simetria(b - a, p - a);
 }
 \end{lstlisting}
-Veamos el ejemplo en práctica sobre la recta definida en \fullref{fig:recta} con la función de distancia con signo definida en \fullref{fig:segmento}.
+Veamos un ejemplo en práctica, sobre la recta definida en \fullref{fig:recta}, con la \textit{función de distancia con signo} de \fullref{fig:segmento}.
 \begin{lstlisting}
 float escena_sdf(vec2 p){
     // Recta Simetría
@@ -305,7 +313,8 @@ float escena_sdf(vec2 p){
   \caption{Simetría FDS ejemplos anteriores}
 \end{figure}
 
-% https://www.shadertoy.com/view/3lsBWS
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/3lsBWS}
 
 Veamos ahora algunos operadores entre \textit{funciones de distancia con signo}. Estos operadores van a ser vitales para crear escenas complejas, ya que van a permitir agregar o sustraer \textit{funciones de distancia con signo exactas}.
 
@@ -337,9 +346,9 @@ El resultado de la adición es el siguiente:
   \caption{ Adición de dos FDS de ejemplos anteriores}
 \end{figure}
 
-% https://www.shadertoy.com/view/WlsBDS
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/WlsBDS}
 
-Como el resultado también es una \textit{función de distancia con signo}, podemos componer estos operadores.
 \subsection{Operador de substracción}
 Antes hemos visto que el operador \enquote{\(\min\)} que combina dos \textit{FDS}, podemos imaginarnos que hace el operador \enquote{\(\max\)}. Este devuelve la distancia más lejana entre las dos, es decir, devuelve la intersección de ambos, ya que si alguna distancia es positiva, devolverá siempre la positiva, en caso de ambas ser negativas, devolverá la menor.
 
@@ -350,7 +359,8 @@ Antes hemos visto que el operador \enquote{\(\min\)} que combina dos \textit{FDS
   \caption{Intersección de las dos FDS de ejemplos anteriores}
 \end{figure}
 
-% https://www.shadertoy.com/view/3llfDS
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/3llfDS}
 
 Vamos a crear el operador de substracción, utilizando el de intersección, pero antes, es fácil observar que podemos cambiar el interior por el exterior, que llamarermos inversión de una \textit{función de distancia con signo}. Bastaría con cambiar el signo, multiplicando por \(-1\).
 \[ Inversión(\Vec{p}, f) = -f(\Vec{p}) \]
@@ -362,7 +372,8 @@ Vamos a crear el operador de substracción, utilizando el de intersección, pero
   \caption{ Interior por Exterior Circunsferencia FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/WlsfDS
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/WlsfDS}
 
 Ahora, las distancias negativas representan el exterior de la figura anterior. Esto junto a la definición de intersección, se eliminará de una figura el interior de la figura anterior. Definimos la substracción de una función de distancia con signo \(f\) otra \(g\), tal que:
 \[\text{substraccion}(\Vec{p}, f,g)=max(f(\Vec{p}), -g(\Vec{p}))\]
@@ -389,7 +400,8 @@ El resultado de la ejecución del código:
   \caption{Substracción de una circunsferencia a un rectangulo FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/WllBWB
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/WllBWB}
 
 %Cabe destacar que esta figura no preserva las distancias, por lo que el objeto restado tendrá el espacio distorsionado, veremos en los siguientes capítulos, como solucionarlo.\\\\
 Vamos a ver otro tipo de transformaciones, las que manipulan el espacio, esto puede hacer que el resultado de las funciones no sean exacto o que debamos hacer una transformación que las transforme en exactas, por ejemplo, el escalado.
@@ -430,7 +442,8 @@ El resultado del escalado es el siguiente:
   \caption{Ejemplo anterior escalado con \(k=0.5\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/WlsBDX
+
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/WlsBDX}
 
 \subsection{Operador de deformación sin exactitud}
 Como se ha comentado antes, hay deformaciones que no preservan la métrica y por tanto las funciones no son exactas. En general, consiste en aplicar una función no \textit{isomórfica} al vector \(\Vec{p}\).\\\\
@@ -458,7 +471,7 @@ El resultado de la deformación:
   \caption{Deformación del espacio de una circunsferencia FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/3lsfWj
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/3lsfWj}
 
 Las aplicaciones explicadas anteriormente, en general, se extienden a \(\mathbb{R}^3\). Por ejemplo, vamos a ver como primitivas generalizan a las de una dimensión superior.
 
@@ -472,7 +485,7 @@ float SDFEsfera(vec3 p, float r){
     return length(p) - r;
 }
 \end{lstlisting}
-Utilizando el \textit{Marcher} y el \textit{modelo de iluminación de Phong}, el resultado es el observado en la \fullref{fig:phong}.
+Utilizando el \textit{Marcher \ref{ch:marcher}} y el \textit{modelo de iluminación \ref{ch:iluminacion}} definido, el resultado es el observado en la \fullref{fig:phong}.
 
 \subsection{Prisma rectangular exacto}
 Este es generalizado del \textit{Rectángulo exacto} en \(\mathbb{R}^2\), el valor absoluto situará las coordenadas en el cuadrante positivo, de los ocho presentes. Las medidas utilizadas serán la mitad, es decir, \(\Vec{s’}= \dfrac{\Vec{s}}{2}\). Aunque no vamos a ver la demostración, una idea de esta es similar a la utilizada para demostrar el rectángulo, cada región exterior de cada cara es anulada, el interior se utiliza la distancia al lado más próximo y en la arista, la distancia euclídea. El resultado.
@@ -506,12 +519,12 @@ El resultado,
   \caption{Prisma Rectangular \(\Vec{s}=\Vec{0.3}\) rotado \(\alpha_{YZ}=\dfrac{\pi}{4}\) FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/WtlBDj
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/WtlBDj}
 
 \subsection{Plano con signo}
 % TODO: Ordenar el texto de la normal.
 Vamos a ver una figura muy importante, el plano con signo divide a \(\mathbb{R}^3\) en dos, uno tendrá valores positivos y el otro, negativos. El signo del producto escalar con la normal del plano indicará en que subespacio se encuentran los puntos. Para esto, definimos el operador del signo de un número:  \(\text{sign}(a)=\pm 1, 0\).\\\\
-En secciones siguientes veremos por qué es útil el signo, definiendo así otro operador. Su demostración se basa en la proyección de un punto \(\Vec{p}\) en el plano\footnote{Podemos definir un plano a partir de su normal y un punto, en particular, el punto será \(0,0,0\) y la normal será un parámetro introducido por el usuario. Formalmente lo encontramos en el siguiente enlace \url{https://mathworld.wolfram.com/Plane.html}.}, centrado en el origen y con un vector normal \(\Vec{n}\).
+En secciones siguientes, veremos por qué es útil el signo de esta función, definiendo así otro operador. Su demostración se basa en la proyección de un punto \(\Vec{p}\) en el plano\footnote{Podemos definir un plano a partir de su normal y un punto, en particular, el punto será \(0,0,0\) y la normal será un parámetro introducido por el usuario. Formalmente lo encontramos en el siguiente enlace \url{https://mathworld.wolfram.com/Plane.html}.}, centrado en el origen y con un vector normal \(\Vec{n}\).
 \[\text{proy}_{\Vec{n}}(\Vec{p}) = \Vec{p} - (\Vec{n}\cdot\Vec{p})\Vec{n} \]
 Por lo que la distancia con signo a este:
 \[ SDFPlano_{\Vec{n}}(\Vec{p})=\text{sign}\left((\Vec{p}-\text{proy}_{\Vec{n}}(\Vec{p})\right) \cdot \Vec{n})\cdot \vert \vert \Vec{p} - \text{proy}_{\Vec{n}}(\Vec{p}) \vert\vert \]
@@ -529,7 +542,7 @@ float SDFPlano(vec3 p, vec3 n){
 }
 \end{lstlisting}
 
-Veamos un ejemplo, pero antes, vamos a desplazar el plano hacia abajo, el operador de traslación lo hemos visto en la sección anterior para una diension inferior y veremos que es equivalente para esta dimensión.
+Veamos un ejemplo, pero antes, vamos a desplazar el plano hacia abajo con el operador de traslación, visto en la sección anterior para una dimension inferior, pero que veremos que es equivalente para esta dimensión.
 \begin{lstlisting}
 float escena_sdf(vec3 p){
     // Desplazamiento
@@ -549,7 +562,7 @@ El resultado,
   \caption{Plano \(\Vec{n}=(0,1,0)\) desplazado \(\Vec{t}=(0, -1, 0)\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/3llBW2
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/3llBW2}
 
 \subsection{Recta y segmento exacto}
 
@@ -581,15 +594,13 @@ float SDFSegmento(vec3 p, vec3 a, vec3 b){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_recta_3d.png}\label{fig:recta3d}}
+  \subfloat[\textit{FDS} de una recta]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_recta_3d.png}\label{fig:recta3d}}
   \hfill
-  \subfloat[\(f\) aplicada sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_segmento_3d.png}\label{fig:segmento3d}}
-  \caption{Recta y Segmento Exacto \(\Vec{a}=\Vec{0}\), \(\Vec{b}=\Vec{0.5}\) SDF}
+  \subfloat[\textit{FDS} de un segmento]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_segmento_3d.png}\label{fig:segmento3d}}
+  \caption{Recta y segmento exactos con \(\Vec{a}=\Vec{0}\), \(\Vec{b}=\Vec{0.5}\), FDS}
 \end{figure}
-
-% https://www.shadertoy.com/view/3tXBWX 
-% https://www.shadertoy.com/view/WtXBWX
-
+Enlace ejemplo recta: \url{https://www.shadertoy.com/view/3tXBWX} y ejemplo segmento:
+\url{https://www.shadertoy.com/view/WtXBWX}\\\\
 Veremos un operador para incrementar el ancho de la recta o del segmento. Algunos de los operadores que vamos a ver también son generalizaciones de los operadores también  vistos en \(\mathbb{R}^2\).
 
 \section{Operadores sobre \(\mathbb{R}^3\)}
@@ -652,32 +663,66 @@ El resultado es el siguiente,
   \caption{Segmento ensanchado exacto FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/3tXfDl
-
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/3tXfDl}\\\\
 Podemos observar que este operador devuelve una figura ensanchada con los bordes redondeados, debido a la métrica, aunque podemos conseguir una figura con bordes redondeados y con la dimensiones originales, sin ensanchar, combinándolo con el operador de escalado.\\\\
 Finalmente, vamos a presentar operadores que transforman figuras exactas de \(\mathbb{R}^2\) en otras en \(\mathbb{R}^3\) de manera exacta. Esto nos será útil ya que podemos calcular una \textit{función de distancia con signo exacta} en \(\mathbb{R}^2\) y utilizar uno de estos operadores para crear uno nuevo que deducirlo matemáticamente, hubiera sido tedioso. Vamos a ver dos, el operador de \textit{revolución} y el operador de \textit{extrusión}.
-\newpage
-%%%%%%%% TODO::::
 \subsection{Operador de revolución}
-El resultado de este operador es una figura generada por el giro sobre un eje de la figura plana.\\\\
-Vamos a calcular la distancia positiva al isoperímetro, dado el plano \(\overline{AB}\) sobre el que está la figura \(f:\mathbb{R}^2\longrightarrow\mathbb{R}\) y dado un punto \(\Vec{p}\in\mathbb{R}^3\) sobre la escena, la proyección de \(\Vec{p}\) sobre el plano \(\overline{AB}\) será \(\Vec{p}_{a,b}\) con \(c\) como coordenada independiente y cuya distancia de la proyección al isoperímetro será \(f(\Vec{p}_{a,b})\), por definición. Si \(\Delta h=(c-0)\) es la altura respecto de \(\Vec{p}\) sobre el plano \(\overline{AB}\), se crea un triángulo equilátero de lados \(\Delta h\) y \( f(\Vec{a,b})\) (Obsérvese la figura \fullref{fig:proof_rev}) y la distancia \Vec{p} hasta el isperímetro de la figura sobre el plano será la diagonal del triángulo formado.
-\[\text{distancia}_{\overline{AB}}(\Vec{p}, f)= \sqrt{(\Delta h)^2+(f(\Vec{p}_{a,b}))^2}=\vert\vert(c, f(\Vec{p}_{a,b})\vert\vert\]
+Vamos a demostrar para el caso particular de la revolución sobre el plano \(\overline{XY}\), ya que las demostraciones para los demás ejes son equivalentes. Veamos una intuición general de la demostración, para cualquier punto \(\Vec{p}\), rotamos el eje \(\overline{XZ}\) hasta hacer que el plano \(\overline{XY}\) lo contenga, o lo que es lo mismo, anulando la componente \(z\) del vector proyectado  \(\Vec{p}_{\overline{XZ}}=\begin{pmatrix}
+    x& z
+\end{pmatrix}\), a partir de ahí, basta con aplicar la \textit{función de distancia con signo 2D} sobre el punto calculado.\\\\
+Utilizaremos el ángulo \(\alpha\) sobre la proyección \(\Vec{p}_{\overline{XZ}}\) y utilizaremos la matriz de rotación en sentido horario para anular \(z\):
+\[\Vec{p}_{\overline{XZ}}^{\alpha}=\Vec{p}_{\overline{XZ}}\cdot\text{rot}(\alpha)
+\]
+Conociendo las equivalencias trigonométricas de \(\sin\) y \(\cos\), transformamos nuestra matriz de rotación, tal que:
+\[
+\text{rot}(\alpha)=\begin{pmatrix}
+    \dfrac{x}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert} & \dfrac{-z}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert}\\
+    \dfrac{z}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert} & \dfrac{x}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert}
+\end{pmatrix}=\begin{pmatrix}
+    x & -z\\
+    z & x
+\end{pmatrix}\cdot\dfrac{1}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert}
+\]
 
-Podemos utilizar esta técnica para ensanchar también el isoperímetro trazado para la revolución:
+haciendo,
+\[\Vec{p}_{\overline{XZ}}^{\alpha}=\begin{pmatrix}
+    x\\
+    z
+\end{pmatrix}^t\cdot\begin{pmatrix}
+    x & -z\\
+    z & x
+\end{pmatrix}\cdot\dfrac{1}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert}=\begin{pmatrix}
+    \dfrac{x^2 + z^2}{\vert\vert\Vec{p}_{\overline{XZ}}\vert\vert}\\
+    0
+\end{pmatrix}^t=\begin{pmatrix}
+    \vert\vert\Vec{p}_{\overline{XZ}}\vert\vert\\
+    0
+\end{pmatrix}^t\]
 
-\[\text{revolucion}_{\overline{AB}}^k(\Vec{p}, f)=\text{distancia}_{\overline{AB}}(\Vec{p}, f)-k\]
+en esta rotación, la coordenada \(y\) es invariante, por lo que el vector sobre el plano \(\overline{XY}\) será:
+\[ \Vec{p}_{\overline{XY}}=\begin{pmatrix}
+    \vert\vert\Vec{p}_{\overline{XZ}}\vert\vert\\
+    p_{y}
+\end{pmatrix}^t\]
 
-Veamos un ejemplo de una figura exacta que podemos generar, por ejemplo, un toro\footnote{Se trata de una figura en forma de donut}. La obtenemos de revolucionar una circunsferencia desplazada. En código,
+Sobre este plano, vamos a utilizar nuestro \textit{FDS} 2D, \(f\), definiendo el operador de revolución como:
+\[\textit{revolucion}_{\overline{XY}}(\Vec{p}, f)=f((\vert\vert \Vec{p}_{\overline{XZ}} \vert\vert, \Vec{p}_y))\]
+Podemos utilizar una isometría de traslación \Vec{t} para añadir un radio de revolución, tal que:
+\[\textit{revolucion}_{\overline{XY}}(\Vec{p}, f)=f((\vert\vert \Vec{p}_{\overline{XZ}} \vert\vert, \Vec{p}_y)-\Vec{t})\]
+Con esta definición, podemos generar de forma exacta, un \textit{toro}. Utilizaremos la función de una circunferencia tras ladada horizontalmente \(r_x\) unidades, al que llamaremos, radio interior del toro y utilizaremos otra variable \(r\) que será el radio del toro. En código:
 
 \begin{lstlisting}
 /// FDS Toro
-float SDFToro(vec3 p, float r1, float r2){
-    // FDS Circunsferencia desplazada izq r1 del centro.
-    float d = length(p.xz) - r1;
-    // Calculamos altura
-    float dh = p.y - 0.;
-    // Calculamos la distancia (la diagonal)
-    return SDFCircunferencia(vec2(dh, d),r2);
+float SDFToro(vec3 p, float rx, float r){   
+    vec2 rev = vec2(
+        length(p.xz), 
+        p.y
+    );
+    // Trasladamos, radio de revolucion
+    // o radio interior del toro.
+    vec2 pt = rev - vec2(rx, 0.);
+    // Radio Toro
+    return SDFCircunferencia(pt, r);
 }
 \end{lstlisting}
 
@@ -688,14 +733,14 @@ float SDFToro(vec3 p, float r1, float r2){
   \caption{Toro exacto por revolución FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/WtsBDf
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/WtsBDf}
 
 \subsection{Operador de extrusión}
 Este último operador consiste en elongar una figura plana hacia un eje. Pudiendo ser de manera finita o infinita. Cada punto \(\Vec{p}\in\mathbb{R}^3\) se proyecta sobre el plano a extruir y se calcula la función de distancia \(\mathbb{R}^2\). Sea \(\Vec{n}\) el  vector normal del plano de extrusión y \(f\) un \textit{FDS}, el operador se define como:
 \[\text{extrusion}^\infty_{\Vec{n}}\left(\Vec{p},f\right) = f\left(\text{proy}_{\Vec{n}}(\Vec{p})\right)\]
 En caso de una extrusión finita, de longitud \(h\), definimos como \(\Delta c\) la distancia a la tapadera, haremos uso de la simetría sobre el plano, reduciendo el problema, tal que, la \enquote{altura} será:
 \[\Delta c  =\vert\vert \Vec{p} - \text{proy}_{\Vec{n}}(\Vec{p}) \vert\vert - h\]
-Dividimos el ejercicio en dos subproblemas, por encima de la tapa \(\Delta c \ge 0\) y aquellas por debajo \(\Delta < 0\). Como referencia, \fullref{fig:proof2}.
+Dividimos el ejercicio en dos subproblemas, por encima de la tapa \(\Delta c \ge 0\) y aquellas por debajo \(\Delta c < 0\). Como referencia, \fullref{fig:proof2}.
 
 \begin{figure}[H]
   \centering
@@ -722,7 +767,7 @@ El interior de la figura ocurre cuando \(\Delta c < 0\) y \(d_1 < 0\), por lo qu
 Finalmente, como se anulan, podemos sumar y la ecuación resultante será:
 \[\text{extrusion}^h_{\Vec{n}}\left(\Vec{p},f\right)=\vert\vert \max((\Delta c, d_1), 0)\vert\vert +  \text{argmax}(\Delta c, d_1) \]
 
-Un ejemplo de esta técnica es la fabricación del cilindro exacto con y sin tapa de radio \(r\). En código:
+Unos ejemplos de estas técnicas es la fabricación del cilindro exacto con y sin tapa de radio \(r\). En código:
 \begin{lstlisting}
 // Proyección sobre plano
 vec3 proyPlano(vec3 p, vec3 n){
@@ -760,22 +805,24 @@ float SDFCilindro(vec3 p, float h, float r){
 }
 \end{lstlisting}
 
-Dibujaremos una circunsferencia en el plano \(\overline{YZ}\) y extruiremos utilizando el vector normal \(\Vec{n}=(0,0,1)\) infinitamente, en el segundo, de longitud \(h=0.6\).
+Creamos una circunsferencia en el plano \(\overline{YZ}\) y la extruimos utilizando el vector normal \(\Vec{n}=(0,0,1)\).
 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
   \subfloat[Cilindro sin tapa]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_cilindro_infinito.png}\label{fig:cilindro_inf}}
   \hfill
-  \subfloat[Cilindro con tapa]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_cilindro.png}\label{fig:cilindro_tapa}}
-  \caption{Cilindro exacto por extrusión con \(r=0.2\) y \(h'=0.3\)  FDS}
+  \subfloat[Cilindro con tapa \(h'=0.3\)]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_cilindro.png}\label{fig:cilindro_tapa}}
+  \caption{Cilindro exacto por extrusión con \(r=0.2\), FDS}
 \end{figure}
 
-% https://www.shadertoy.com/view/3lsfDX
-% https://www.shadertoy.com/view/3tlBWf
+Enlace ejemplo cilindro:
+\url{https://www.shadertoy.com/view/3lsfDX}
+, cilindro acotado,
+\url{https://www.shadertoy.com/view/3tlBWf}
 
 \subsection{Operador de agregación y substracción}
-Vamos a recordar los operadores de agregación y de substracción presentados anteriormente, en la sección de operadores en \(\mathbb{R}^2\) y que son equivalentes para \(\mathbb{R}^3\). Vamos a presentar también un nuevo operador, el operador de sección en el que utilizaremos el plano con signo, visto anteriormente. Para el primer ejemplo, vamos a utilizar dos esferas con el mismo radio y una separada de la otra. El código de la agregación será:
+Los operadores de agregación y de substracción son también generalizados para \(\mathbb{R}^3\). Vamos a presentar también un nuevo operador, el operador de sección en el que utilizaremos el plano con signo, visto anteriormente. Para el primer ejemplo, vamos a utilizar dos esferas con el mismo radio y una separada de la otra. En código:
 \begin{lstlisting}
 float escena_sdf(vec3 p){
     // Dos esferas, una trasladadas
@@ -786,7 +833,6 @@ float escena_sdf(vec3 p){
     );
 }
 \end{lstlisting}
-su resultado:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
@@ -794,8 +840,7 @@ su resultado:
   \caption{Agregación de dos esferas \(r=0.3\) y una trasladada}
 \end{figure}
 
-% https://www.shadertoy.com/view/3llBWl
-
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/3llBWl}
 Como ya se ha comentado, el operador \enquote{\(\max\)} devuelve la intersección de ambas figuras. Vamos a utilizar la definición del plano con signo para seccionar una figura, ya que una región es sólida y la otra no. \\\\
 
 \begin{lstlisting}
@@ -819,7 +864,7 @@ Se trata de una sección del eje \(\Vec{z}\), desplazando el plano con el operad
   \caption{Una esfera \(r=0.3\) seccionada por un plano \(\Vec{n}=(0,0,-1)\) desplazado}
 \end{figure}
 
-% https://www.shadertoy.com/view/WtsBWl
+Enlace del ejemplo:\url{https://www.shadertoy.com/view/WtsBWl}
 
 Finalmente, veamos un ejemplo de \textit{subtracción}, utilizando las dos esferas vistas antes. En código:
 
@@ -845,7 +890,8 @@ Rotaremos la escena para poder ver así el interior, utilizaremos el operador de
   \caption{Dos esferas \(r=0.3\) y substracción de la trasladada}
 \end{figure}
 
-% https://www.shadertoy.com/view/WlsBWl
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/WlsBWl}
 
 \subsection{Operador de deformación no exacta}
 Veamos el último operador el de deformación, recordemos que este no siempre conserva la métrica, provocando lo que llamaremos \enquote{artefactos}. En la siguiente sección veremos como resolverlos. Vamos a definir la siguiente deformación contínua y derivable:
@@ -884,6 +930,7 @@ El resultado obtenido es el siguiente:
   \caption{Deformación torsión de un cubo \(\Vec{l}=\Vec{0.2}\)}
 \end{figure}
 
-% https://www.shadertoy.com/view/ttlfWl
+Enlace del ejemplo:
+\url{https://www.shadertoy.com/view/ttlfWl}
 
 Como vemos, esta deformación ha creado artefactos, por ejemplo, la tapadera es no es completamente cuadrada y vemos que se ha deformado. Esto ocurre ya que la bola también ha sido deformada y esta ahora puede contener algún punto en su interior, sobreestimando.
