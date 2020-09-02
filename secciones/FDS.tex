@@ -7,7 +7,7 @@ Una función de distancia con signo, se dice exacta si está definido sobre la m
 \end{definition}
 
 Vamos a definir algunas \textit{funciones de distancia con signo exactas}, que las denominaremos: \enquote{\textit{primitivas}}. En esta sección veremos primitivas sobre \(\mathbb{R}^2 \text{ y }\mathbb{R}^3\), definiéndolas centradas en el origen. Veremos también operadores para aplicar transformaciones sobre estas, como por ejemplo la traslación y la rotación.\\\\
-Se ha tomado como referencia algunas primitivas propuestas por el autor, \textit{Iñigo Quilez} en su blog \enquote{\textit{Iquilezles} - Distance Functions} \url{https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm}. Las demostraciones de las funciones presentadas en este trabajo son de propia cosecha.
+Se ha tomado como referencia algunas primitivas propuestas por el autor, \textit{Iñigo Quilez} en su blog \enquote{\textit{Iquilezles} - Distance Functions} \url{https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm} y \url{https://iquilezles.org/www/articles/distfunctions/distfunctions.htm}. Las demostraciones de las funciones presentadas en este trabajo son de propia cosecha.
 
 \section{Primitivas sobre \(\mathbb{R}^2\)}
 En primer lugar, veremos las primitivas en \(\mathbb{R}^2\) que serán fundamentales para definir las de una dimensión superior, \(\mathbb{R}^3\). Las visualizaremos utilizando la plataforma \textit{Shadertoy}. Vamos a crear un pequeño código que utilizaremos para presentar estas funciones:
@@ -40,7 +40,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 \end{lstlisting}
 
 \subsection{Circunferencia exacta}
-La definición de esta figura se basa en la distancia desde cualquier punto \(\Vec{p}\) hasta \((0,0)\), el teorema de pitágoras, el módulo del vector \(\vert\vert\Vec{p}\vert\vert\)  crea una función de distancia positiva con un isoperímetro \(S=\{(0,0)\}\). Si a las distancias le restamos el radio \(r\), anularemos aquellos puntos a distancia \(r\). Cuando el vector está en el interior de la circunferencia, es decir, el módulo del vector es inferior al radio, \(\vert\vert\Vec{p}\vert\vert < r \longrightarrow \vert\vert\Vec{p}\vert\vert - r < 0\), haciendo la distancia negativa. En caso de que el módulo del vector coincide con el radio, \(\vert\vert\Vec{p}\vert\vert = r \longrightarrow \vert\vert\Vec{p}\vert\vert - r = 0\), es decir, estamos sobre el isoperímetro y finalmente, cuando módulo es mayor al radio, \(\vert\vert\Vec{p}\vert\vert > r \longrightarrow \vert\vert\Vec{p}\vert\vert - r > 0\) la distancia será positiva, en el exterior.
+La definición de la circunferencia  hace uso de la distancia desde cualquier punto \(\Vec{p}\) hasta el origen, el teorema de pitágoras, el módulo del vector \(\vert\vert\Vec{p}\vert\vert\)  crea una función de distancia positiva con un isoperímetro \(S=\{(0,0)\}\). Si a las distancias le restamos el radio \(r\), anularemos aquellos puntos a distancia \(r\). Cuando el vector está en el interior de la circunferencia, es decir, el módulo del vector es inferior al radio, \(\vert\vert\Vec{p}\vert\vert < r \longrightarrow \vert\vert\Vec{p}\vert\vert - r < 0\), haciendo la distancia negativa. En caso de que el módulo del vector coincide con el radio, \(\vert\vert\Vec{p}\vert\vert = r \longrightarrow \vert\vert\Vec{p}\vert\vert - r = 0\), es decir, estamos sobre el isoperímetro y finalmente, cuando módulo es mayor al radio, \(\vert\vert\Vec{p}\vert\vert > r \longrightarrow \vert\vert\Vec{p}\vert\vert - r > 0\) la distancia será positiva, en el exterior.
 \begin{lstlisting}
 // Circunsferencia Exacta
 float SDFCircunsferencia(vec2 p, float r){
@@ -57,7 +57,7 @@ float SDFCircunsferencia(vec2 p, float r){
 El ejemplo: \url{https://www.shadertoy.com/view/WtXfRj}
 
 \subsection{Rectángulo exacto}
-Para calcular de forma exacta esta función, vamos a definir dos operadores sobre los vectores:
+Para calcular de forma exacta el rectángulo, vamos a definir dos operadores sobre los vectores:
 \[\vert(x_0,x_1,\dots,x_n)\vert=(\vert x_0\vert,\vert x_1\vert,\dots,\vert x_n \vert)\]
 \[\max\left((x_0,x_1,\dots,x_n), k\right)=(\max( x_0, k), \max(x_1, k),\dots, \max(x_n, k))\]
 El operador valor absoluto es útil ya que reduce el problema a un único cuadrante, que representa un cuarto de la figura original. Las medidas serán la mitad de la original \(\Vec{s}\), en forma vectorial:
@@ -139,7 +139,7 @@ float SDFRecta(vec2 p, vec2 a, vec2 b){
 Enlace del ejemplo: \url{https://www.shadertoy.com/view/ttlBzX}
 
 \subsection{Segmento exacto}
-Se trata de un caso particular del operador proyección entre dos vectores \(\Vec{a}, \Vec{b}\). 
+El segmento es un caso particular del operador proyección entre dos vectores \(\Vec{a}, \Vec{b}\), utilizado para la definición de la recta. 
 \[ \text{proy}_{\Vec{b}}\Vec{a}=\left(\dfrac{\Vec{a}\cdot \Vec{b}}{\Vec{b}\cdot \Vec{b}}\right)\Vec{b}\]
 Observamos que \(\dfrac{\Vec{a}\cdot \Vec{b}}{\Vec{b}\cdot \Vec{b}}\) es el factor de proyección que está en \(\mathbb{R}\). Cuando este factor es cero, la proyección será el vector \((0,0)\), en caso de que el factor tome el valor de \(1\), la proyección será el vector \(\Vec{b}\). Por lo que el segmento está formado por todos los puntos que toma el factor en el intervalo \([0,1]\):
 \[ \text{proy[0,1]}_{\Vec{b}}\Vec{a}=\max\left(\min\left(\dfrac{\Vec{a}\cdot \Vec{b}}{\Vec{b}\cdot \Vec{b}}, 0\right), 1\right)\Vec{b}\]
@@ -316,7 +316,7 @@ float escena_sdf(vec2 p){
 Enlace del ejemplo:
 \url{https://www.shadertoy.com/view/3lsBWS}
 
-Veamos ahora algunos operadores entre \textit{funciones de distancia con signo}. Estos operadores van a ser vitales para crear escenas complejas, ya que van a permitir agregar o sustraer \textit{funciones de distancia con signo exactas}.
+Veamos ahora algunos operadores entre \textit{funciones de distancia con signo}. Estos operadores van a ser vitales para crear escenas complejas, ya que van a permitir agregar o sustraer \textit{funciones de distancia con signo}, aunque la resultante, no será exacta.
 
 \subsection{Operador de agregación}
 Ya vista la función de traslación, ahora nos puede ser útil ver como agregar dos \textit{funciones de distancia con signo}. El resultado de este operador será otra \textit{función de distancia con signo} formado por la distancia menor en cada punto de las dos funciones a agregar. Esta descripción se define como:
@@ -350,7 +350,7 @@ Enlace del ejemplo:
 \url{https://www.shadertoy.com/view/WlsBDS}
 
 \subsection{Operador de substracción}
-Antes hemos visto que el operador \enquote{\(\min\)} que combina dos \textit{FDS}, podemos imaginarnos que hace el operador \enquote{\(\max\)}. Este devuelve la distancia más lejana entre las dos, es decir, devuelve la intersección de ambos, ya que si alguna distancia es positiva, devolverá siempre la positiva, en caso de ambas ser negativas, devolverá la menor.
+Antes hemos visto que el operador \enquote{\(\min\)} que combina dos \textit{FDS}, podemos intuir que hace el operador \enquote{\(\max\)}. Este devuelve la distancia más lejana entre las dos, es decir, devuelve la intersección de ambos, ya que si alguna distancia es positiva, devolverá siempre la positiva, en caso de ambas ser negativas, devolverá la menor.
 
 \begin{figure}[H]
   \centering
@@ -445,8 +445,8 @@ El resultado del escalado es el siguiente:
 
 Enlace del ejemplo:\url{https://www.shadertoy.com/view/WlsBDX}
 
-\subsection{Operador de deformación sin exactitud}
-Como se ha comentado antes, hay deformaciones que no preservan la métrica y por tanto las funciones no son exactas. En general, consiste en aplicar una función no \textit{isomórfica} al vector \(\Vec{p}\).\\\\
+\subsection{Operador de deformación inexactas}
+Como se ha comentado antes, hay deformaciones que no preservan la métrica y por tanto las funciones resultantes no son exactas. En general, consiste en aplicar una función no \textit{isométrica} al vector \(\Vec{p}\).\\\\
 Si \(g:\mathbb{R}^2\longrightarrow \mathbb{R}^2\) es una función no \textit{isométrica}:
 \[ \forall \Vec{x}, \Vec{y} \in \mathbb{R}^2, d(g(x), g(y)) \neq d(x,y) \]
 Haciendo que el resultado no sea una \textit{función de distancia con signo exacta}. Se recomienda utilizar aplicaciones \(g\) que sean continuas y derivables, para así evitar transformaciones fuertes o discontinuidades. Por ejemplo,

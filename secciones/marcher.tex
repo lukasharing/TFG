@@ -3,8 +3,8 @@
 % https://books.google.es/books?id=MNqRDwAAQBAJ&pg=PA13&dq=sphere+ray+marcher+graphics&hl=es&sa=X&ved=0ahUKEwj1sqWTgZvrAhUCxhoKHRwBCVIQ6AEIJzAA#v=onepage&q=sphere%20ray%20marcher%20graphics&f=false
 Un \textit{fragment shader} es aplicado a cada píxel de nuestra pantalla, que es procesado por una \textit{hebra} de la \textit{GPU}, una especie de microprocesador que trabaja de manera individual. La hebra contiene información del pixel como es la posición y la resolución, esta devolverá un color en formato \textit{rgba} con tipo \textit{vec4}.\\\\
 Utilizaremos la plataforma \textit{Shadertoy}\footnote{Creada por Iñigo Quilez  y Pol Jeremias, 2013. \url{https://www.shadertoy.com/}}, un entorno de trabajo online adecuado para escribir nuestros \textit{shaders}. Este utiliza la \textit{API WebGL} para crear una escena de una figura con 4 vértices formando un rectángulo de dos triángulos posicionado en el plano frontal (o \textit{Viewport}) al que se le va a aplicar el \textit{shader} escrito como un \textit{Fragment Shader}, como podemos observar en \fullref{fig:marcher}. \\\\
-Dada una escena analítica, vamos a presentar técnicas de trazado de escenas, suponiendo que nuestra pantalla se encuentra en la escena y \enquote{lanzaremos un rayo} hacia cada pixel desde un punto que denotaremos como la posición de la cámara. Definimos \enquote{lanzar un rayo} como el proceso, analítico o numérico, del cálculo de una intersección desde un punto en una dirección. Como proceso analítico, o cálculo exacto, encontramos la técnica 
-\textit{analytical raytracing}\footnote{Podemos encontrar más información sobre el tema: \url{https://www.sciencedirect.com/science/article/pii/S0010465513002713}}, por otro lado, en la técnica numérica, encontramos el algoritmo que vamos a utilizar, \textit{Spheremarching}\ref{sec:spheremarching}.
+Dada una escena analítica, vamos a presentar técnicas de trazado de escenas, suponiendo que nuestra pantalla se encuentra en la escena y \enquote{lanzaremos un rayo} hacia cada pixel desde un punto que denotaremos como la posición de la cámara. Definimos \enquote{lanzar un rayo} como el proceso, analítico o numérico, del cálculo de una intersección desde un punto en una dirección. Como proceso analítico, o cálculo exacto, encontramos la técnica de 
+\textit{Ray Tracing}\cite{glassner1989introduction}, por otro lado, en la técnica numérica, encontramos el algoritmo que vamos a utilizar, \textit{Spheremarching}\ref{sec:spheremarching}.
 
 \begin{figure}[H]
   \centering
@@ -15,7 +15,7 @@ Dada una escena analítica, vamos a presentar técnicas de trazado de escenas, s
 
 
 \section{Spheremarching\label{sec:spheremarching}}
-Los algoritmos numéricos suelen ser menos costosos computacionalmente, aproximando con una variable de control que afecta al resultado trazado. En particular, se trata de una técnica reiterativa, conocidas como \textit{Raymarcher}. John C. Hart presentó en 1995 un algoritmo de esta categoría con el nombre de  \textit{Spheremarching}\footnote{El enlace al documento publicado: \url{https://www.researchgate.net/publication/2792108_Sphere_Tracing_A_Geometric_Method_for_the_Antialiased_Ray_Tracing_of_Implicit_Surfaces}}.\\\\
+Los algoritmos numéricos suelen ser menos costosos computacionalmente, aproximando con una variable de control que afecta al resultado trazado. En particular, se trata de una técnica reiterativa, conocidas como \textit{Raymarcher}. John C. Hart presentó en 1996 un algoritmo de esta categoría, con el nombre de  \enquote{\textit{Spheremarching}}\cite{hart1996sphere}.\\\\
 Esta técnica hace uso las \textit{funciones de distancia con signo} como escena y recibe el atributo de iterativo, ya que, desde la posición de la \textit{cámara} u \textit{ojo}, incrementa el vector director hacia el pixel, conocido como \enquote{rayo} y es proporcional a la \textit{función de distancia con signo} devuelto por el vector iterado. Recibe el prefijo \enquote{\textit{Sphere}\textendash}, ya que, podemos generar, para cada iteracion, una esfera de radio igual al valor de la distancia con signo, sin ningún punto en su interior. Definimos el vector \enquote{rayo} en la iteració n-ésima, como:
 \[ \Vec{p}_{n}=\Vec{ojo} + \Vec{direccion} \cdot d_{n} \]
 donde \(d_{n}\) es la distancia total recorrida por todas las iteraciones:
@@ -30,7 +30,7 @@ Este algoritmo devolverá \(d_n\) para el número de iteraciones fijadas, \enquo
  \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/raymarching.png}\label{fig:spheremarcher}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/spheremarching.png}\label{fig:spheremarcher}
   \caption{Ejemplo del algoritmo \textit{Spheremarching}}
 \end{figure}
 

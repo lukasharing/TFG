@@ -25,8 +25,9 @@ Vamos a presentar un teorema\footnote{\url{https://ocw.mit.edu/courses/mathemati
 \begin{theorem}
 	El vector gradiente \(\nabla f(x_0, y_0, z_0)\)  es perpendicular a la curva de la tangente de una \textit{isosuperficie} en el punto \(\Vec{p}=(x_0, y_0, z_0)\).
 \end{theorem}
-% Nota pie, 
-En realidad, nos quiere decir que la normal de una \textit{isosuperficie} es proporcional a su gradiente o exacta en caso de su posterior normalización\footnote{Decimos que un vector está normalizado cuando su módulo es exactamente \(1\) .}, que denotaremos:
+
+
+La demostración de este teorem lo podemos encontrar en \ref{}, En realidad, nos quiere decir que la normal de una \textit{isosuperficie} es proporcional a su gradiente o exacta en caso de su posterior normalización\footnote{Decimos que un vector está normalizado cuando su módulo es exactamente \(1\) .}, que denotaremos:
 \[norm:\mathbb{R}^n\longrightarrow\mathbb{R}^n, norm(\Vec{v})=\dfrac{\Vec{v}}{\vert\vert v \vert\vert}\]
 %Su demostración está basada en el concepto del plano tangente.\\\\
 % https://tutorial.math.lamar.edu/classes/calciii/gradientvectortangentplane.aspx
@@ -100,13 +101,10 @@ Los valores inferiores a \(0.6\) se transforman a valores próximos a \(0.0\), o
   \subfloat[Imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-left.png}}
   \hfill
   \subfloat[\(f(x)=x^8\) sobre la imagen original]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/preliminars/pol8-img-right.png}}
-  \caption{A la izquierda una imagen con un canal \([0,1]\). A la derecha, la misma imagen, pero aplicado el \textit{homeomorfismo} \(f\). En código: \url{https://www.shadertoy.com/view/wljfR1}}
+  \caption{A la izquierda una imagen con un canal \([0,1]\). A la derecha, la misma imagen, pero aplicado el \textit{homeomorfismo} \(f\).}
   \label{fig:homeomorphism}
 \end{figure}
-Podemos definir nuestra función \(f\) sobre el intervalo \([0,1]\) con menos requerimiento computacional utilizando una \textit{aproximación de Taylor para un intervalo}\footnote{Aproximación de taylor sobre un intervalo con tolerancia. Enlace:
-\url{https://mathinsight.org/achieving_desired_tolerance_taylor_polynomial_desired_interval_refresher}
-}:
-\[ f(x)=\sin\left(\dfrac{\pi}{2}x\right)\approx \max\left(\dfrac{\pi}{2}x-\dfrac{\pi^3}{48}x^3+\dfrac{\pi^5}{3840}x^5, 1\right) \]
+En código: \url{https://www.shadertoy.com/view/wljfR1}
 
 \section{Homotopías}
 % Nota pie
@@ -120,9 +118,10 @@ En esta última sección, vamos a ver una aplicación matemática que es utiliza
 \end{definition}
 % nota pie
 \begin{definition}
-    Claramente \(H\) es una homotopía, llamaremos función de interpolación lineal o función de mezcla con peso\label{def:mix}\footnote{Encontramos este término en libros como} a la apliación:
+    Claramente \(H\) es una homotopía, llamaremos función de mezcla lineal\label{def:mix}\footnote{Se utiliza este concepto en la documentación oficial, sección \enquote{8.3 Common Functions}} a la homotopía:
     \[H(x, t)=(1-t)\cdot f(x) + t\cdot g(x)\]
 \end{definition}
+
 Como podemos observar,  la última definición es una homotopía, ya que, la suma de dos funciones continiuas es siempre continua y los extremos resultan \(f(x)\) y \(g(x)\), respectivamente.\\\\
 Como \(t\in[0,1]\), podemos aplicar un \textit{homeomorfismo} \(p(t)\) y tener así, una versión más general.
     \[H(x, t')=H(x, p(t))=(1-p(t))\cdot f(x) + p(t)\cdot g(x)\]
