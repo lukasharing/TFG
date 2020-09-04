@@ -20,14 +20,13 @@ Para esta última definición, presentaremos un algoritmo de trazado de escena d
 \newpage
 \section{La normal de una isosuperficie \label{sec:normal}}
 
-Vamos a presentar un teorema\footnote{\url{https://ocw.mit.edu/courses/mathematics/18-02sc-multivariable-calculus-fall-2010/2.-partial-derivatives/part-b-chain-rule-gradient-and-directional-derivatives/session-36-proof/MIT18_02SC_notes_19.pdf}} esencial para el cálculo de la normal de una superficie ya que es fundamental para la confección de una escena, especialmente en un modelo de iluminación\ref{iluminacion}.
+Vamos a presentar un teorema esencial para el cálculo de la normal de una superficie, cuya demostración propuesta por  \cite{goldman2005curvature} (p. 641-642). Esta es fundamental para la confección de una escena, especialmente en un modelo de iluminación\ref{ch:iluminacion}.
 
 \begin{theorem}
 	El vector gradiente \(\nabla f(x_0, y_0, z_0)\)  es perpendicular a la curva de la tangente de una \textit{isosuperficie} en el punto \(\Vec{p}=(x_0, y_0, z_0)\).
 \end{theorem}
 
-
-La demostración de este teorem lo podemos encontrar en \ref{}, En realidad, nos quiere decir que la normal de una \textit{isosuperficie} es proporcional a su gradiente o exacta en caso de su posterior normalización\footnote{Decimos que un vector está normalizado cuando su módulo es exactamente \(1\) .}, que denotaremos:
+En realidad, nos quiere decir que la normal de una \textit{isosuperficie} es proporcional a su gradiente o exacta en caso de su posterior normalización\footnote{Decimos que un vector está normalizado cuando su módulo es exactamente \(1\) .}, que denotaremos:
 \[norm:\mathbb{R}^n\longrightarrow\mathbb{R}^n, norm(\Vec{v})=\dfrac{\Vec{v}}{\vert\vert v \vert\vert}\]
 %Su demostración está basada en el concepto del plano tangente.\\\\
 % https://tutorial.math.lamar.edu/classes/calciii/gradientvectortangentplane.aspx

@@ -2,37 +2,43 @@
 \chapter{Marcher\label{ch:marcher}}
 % https://books.google.es/books?id=MNqRDwAAQBAJ&pg=PA13&dq=sphere+ray+marcher+graphics&hl=es&sa=X&ved=0ahUKEwj1sqWTgZvrAhUCxhoKHRwBCVIQ6AEIJzAA#v=onepage&q=sphere%20ray%20marcher%20graphics&f=false
 Un \textit{fragment shader} es aplicado a cada píxel de nuestra pantalla, que es procesado por una \textit{hebra} de la \textit{GPU}, una especie de microprocesador que trabaja de manera individual. La hebra contiene información del pixel como es la posición y la resolución, esta devolverá un color en formato \textit{rgba} con tipo \textit{vec4}.\\\\
-Utilizaremos la plataforma \textit{Shadertoy}\footnote{Creada por Iñigo Quilez  y Pol Jeremias, 2013. \url{https://www.shadertoy.com/}}, un entorno de trabajo online adecuado para escribir nuestros \textit{shaders}. Este utiliza la \textit{API WebGL} para crear una escena de una figura con 4 vértices formando un rectángulo de dos triángulos posicionado en el plano frontal (o \textit{Viewport}) al que se le va a aplicar el \textit{shader} escrito como un \textit{Fragment Shader}, como podemos observar en \fullref{fig:marcher}. \\\\
-Dada una escena analítica, vamos a presentar técnicas de trazado de escenas, suponiendo que nuestra pantalla se encuentra en la escena y \enquote{lanzaremos un rayo} hacia cada pixel desde un punto que denotaremos como la posición de la cámara. Definimos \enquote{lanzar un rayo} como el proceso, analítico o numérico, del cálculo de una intersección desde un punto en una dirección. Como proceso analítico, o cálculo exacto, encontramos la técnica de 
-\textit{Ray Tracing}\cite{glassner1989introduction}, por otro lado, en la técnica numérica, encontramos el algoritmo que vamos a utilizar, \textit{Spheremarching}\ref{sec:spheremarching}.
+Utilizaremos la plataforma \textit{Shadertoy}\footnote{Creada por Iñigo Quilez  y Pol Jeremias, 2013. \url{https://www.shadertoy.com/}}, un entorno de trabajo online adecuado para escribir nuestros \textit{shaders}. Este utiliza la \textit{API WebGL} para crear una escena de una figura con 4 vértices formando un rectángulo de dos triángulos, posicionado en el plano frontal (o \textit{Viewport}) al que se le va a aplicar un \textit{Fragment Shader}, véase la imagen consecutiva.
 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/gpu.png}\label{fig:marcher}
-  \caption{Lanzamiento de rayos para el trazado de una escena}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/gpu.png}
+  \caption{Fragment shader y Lanzamiento de rayos para el trazado de una escena}
+  \label{fig:marcher}
 \end{figure}
 
+Dada una escena analítica, vamos a presentar técnicas de trazado de escenas, suponiendo que nuestra pantalla se encuentra en la escena y \enquote{lanzaremos un rayo} hacia cada pixel desde la posición de la cámara, como observamos en \ref{fig:marcher}. Definimos \enquote{lanzar un rayo} como el proceso, analítico o numérico, del cálculo de una intersección desde un punto en una dirección. Como técnica analítica, o cálculo exacto, encontramos la técnica de 
+\textit{Ray Tracing}\cite{glassner1989introduction}. Como técnica numérica, o cálculo aproximado, encontramos, \textit{Spheremarching}\ref{sec:spheremarching}, que será el algoritmo que estudiaremos.
 
 \section{Spheremarching\label{sec:spheremarching}}
-Los algoritmos numéricos suelen ser menos costosos computacionalmente, aproximando con una variable de control que afecta al resultado trazado. En particular, se trata de una técnica reiterativa, conocidas como \textit{Raymarcher}. John C. Hart presentó en 1996 un algoritmo de esta categoría, con el nombre de  \enquote{\textit{Spheremarching}}\cite{hart1996sphere}.\\\\
-Esta técnica hace uso las \textit{funciones de distancia con signo} como escena y recibe el atributo de iterativo, ya que, desde la posición de la \textit{cámara} u \textit{ojo}, incrementa el vector director hacia el pixel, conocido como \enquote{rayo} y es proporcional a la \textit{función de distancia con signo} devuelto por el vector iterado. Recibe el prefijo \enquote{\textit{Sphere}\textendash}, ya que, podemos generar, para cada iteracion, una esfera de radio igual al valor de la distancia con signo, sin ningún punto en su interior. Definimos el vector \enquote{rayo} en la iteració n-ésima, como:
+Los algoritmos numéricos suelen ser menos costosos computacionalmente, aproximando con una variable de control que afecta al resultado trazado. En particular, se trata de una técnica iterativa, conocidas como \textit{Raymarchers}. John C. Hart presentó en 1996 un algoritmo de esta categoría, con el nombre de  \enquote{\textit{Spheremarching}}\cite{hart1996sphere}.\\\\
+Esta técnica hace uso las \textit{funciones de distancia con signo} como escena y recibe el atributo de iterativo, ya que, desde la posición de la \textit{cámara} u \textit{ojo}, incrementa el vector director hacia el pixel, conocido como \enquote{rayo} y es proporcional a la \textit{función de distancia con signo} devuelto por el vector iterado. Recibe el prefijo \enquote{\textit{Sphere}\textendash}, ya que, podemos generar para cada iteracion, una esfera de radio igual al valor absoluto de la distancia, sin que esta contenga ningún punto en su interior. Definimos el vector \enquote{rayo} en la iteració n-ésima, como:
 \[ \Vec{p}_{n}=\Vec{ojo} + \Vec{direccion} \cdot d_{n} \]
 donde \(d_{n}\) es la distancia total recorrida por todas las iteraciones:
 \[d_{n}=d_{n-1} + f(\Vec{p}_{n-1})\text{ con } d_0=0\]
-Al tratarse de un modelo iterativo, debemos describir las condiciones de parada del algoritmo, donde vamos a destacar tres:
+
+y \(f\), nuestra escena como \textit{función de distancia con signo} tridimensional.
+
+ \begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}%,margin=2cm
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/spheremarching.png}
+  \caption{Ejemplo del algoritmo \textit{Spheremarching}}
+  \label{fig:spheremarcher}
+\end{figure}
+
+Al tratarse de un modelo iterativo, debemos enunciar las condiciones de parada del algoritmo, donde vamos a destacar tres:
 \begin{enumerate}
     \item \textbf{Primera condición}. El algoritmo finalizará cuando estemos \enquote{sobre} la \textit{isosuperficie}. Al tratarse de un algoritmo numérico, vamos a aproximarla, utilizando una variable de control \(\epsilon\) que relajará la restricción de la definición de  \textit{isosuperficie}, haciendo \(f(\Vec{p}_n) < \epsilon\), ya que, si \(\epsilon = 0\), trataríamos de un modelo analítico.
     \item \textbf{Segunda condición}. Superar una cierta distancia recorrida, \(d_{n}\ge MAXIMO\), creando una esfera de trazado sobre el punto de la cámara.
     \item \textbf{Tercera condición}. Superar el número de iteraciones máximas, \(n \ge PASOS\).
 \end{enumerate}
 Este algoritmo devolverá \(d_n\) para el número de iteraciones fijadas, \enquote{PASOS}. Cuando el algoritmo finaliza debido a la \textbf{segunda o tercera condición}, devolverá, \(d_n=MAXIMO\), recibiendo el nombre de \enquote{\textit{fallo}}. Un fallo, representando un pixel vacío, sin superficie trazada, pudiéndose considerar el fondo de la escena.
- \begin{figure}[H]
-  \centering
-  \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/spheremarching.png}\label{fig:spheremarcher}
-  \caption{Ejemplo del algoritmo \textit{Spheremarching}}
-\end{figure}
 
 \newpage
 \begin{lstlisting}
@@ -65,9 +71,9 @@ float SphereMarching(
 }
 \end{lstlisting}
 \newpage
-Este algoritmo es implementado en un \textit{shader}, aplicado para cada pixel de nuestra pantalla. En el caso  de que el algoritmo no devuelva \enquote{fallo}, podremos calcular a partir del valor devuelto \(d_n<MAXIMO\) el punto aproximado sobre la superficie, tal que:
+En el caso  de que el algoritmo no devuelva \enquote{fallo}, podremos calcular a partir del valor devuelto \(d_n<MAXIMO\) el punto aproximado sobre la superficie, tal que:
 \[ \Vec{p} = \Vec{ojo} + d_n \cdot  \Vec{direccion} \]
-Conociendo los puntos de una superficie, podremos añadir información a la escena, como por ejemplo, un modelo de iluminación o materiales y texturas.\\\\
+Conociendo los puntos de una superficie, podremos obtener información a la escena, como por ejemplo, un modelo de iluminación o materiales y texturas.\\\\
 En \textit{Shadertoy}, crearemos un nuevo \textit{shader} donde se nos ofrecerá un entorno para trabajar y un código de ejemplo:
 \begin{lstlisting}
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
@@ -118,7 +124,7 @@ void mainImage(
 }
 \end{lstlisting}
 \newpage
-La función \textit{escena\_sdf}, que se encuentra dentro de la función \textit{SphereMarching}, contiene la escena como una \textit{función de distancia con signo}. Veremos en el sexto capítulo\ref{ch:fds}, como crear nuestras escenas. Aunque, para probar nuestro algoritmo, vamos a definir una escena muy simple:
+La función \textit{escena\_sdf}, que se encuentra dentro de la función \textit{SphereMarching}, contiene la escena como una \textit{función de distancia con signo}. Veremos en el sexto capítulo\ref{ch:fds}, como crear nuestras escenas. Aunque, para probar nuestro algoritmo, vamos a definir una escena muy simple, una esfera:
 \begin{lstlisting}
 /* 
 Una esfera en el la coordenada (0,0,0) de radio 0.2 unidades.
@@ -133,8 +139,9 @@ Demos una pincelada de como se ha definido esta función, se calcula el módulo 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/sdf1.png}\label{fig:hello}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/starting/sdf1.png}
   \caption{"Hola mundo" del algoritmo \textit{SDF}.}
+  \label{fig:hello}
 \end{figure}
 
 Enlace del ejemplo \url{https://www.shadertoy.com/view/wtsfDn}\\\\

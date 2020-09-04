@@ -1,9 +1,9 @@
 \chapter{Modelo de iluminación\label{ch:iluminacion}}
-En este capítulo vamos a ver los principios de los modelos de iluminación y algunos operadores importantes. Vamos a presentar el modelo de iluminación Phong, que sigue presente desde su publicación\footnote{\enquote{Illumination for Computer Generated Pictures}, por Bui Tuong Phong  en 1975: \url{https://users.cs.northwestern.edu/~ago820/cs395/Papers/Phong_1975.pdf}}  utilizado desde los años 70.
-\begin{quote}{Bui Thoung Phong}
-    La percepción visual humana y las leyes de la óptica, se consideran indispensables en el desarrollo de una regla de sombreado, proporcionando una mejor calidad y un mayor realismo en las imágenes generadas.
+En este capítulo vamos a ver los principios de los modelos de iluminación y algunos operadores importantes. Vamos a presentar el modelo de iluminación Phong, que sigue presente desde su publicación \cite{phong1975illumination}.
+\begin{quote}{Bui Thoung Phong \cite{cite} (p. 1)}
+    \enquote{La percepción visual humana y las leyes de la óptica, se consideran indispensables en el desarrollo de una regla de sombreado, proporcionando una mejor calidad y un mayor realismo en las imágenes generadas}.
 \end{quote}
-Dividiremos el capítulo en dos secciones, luces y sombras. Veremos que ambos hacen uso de la normal de la superficie, es por ello que vamos a definir una función de cálculo numérico visto en los \textit{Preliminares}\ref{sec:normal}.
+Dividiremos el capítulo en dos secciones, luces y sombras. Veremos que ambos hacen uso de la normal de la superficie, por ello, vamos a definir en \textit{GLSL}, la función de cálculo numérico visto en los \textit{Preliminares}\ref{sec:normal}.
 \begin{lstlisting}
 // Normal de la isosuperficie en p.
 vec3 Normal(vec3 p){
@@ -23,12 +23,25 @@ vec3 Normal(vec3 p){
 \end{lstlisting}
 \newpage
 Vamos a ahora a presentar el operador, \textit{producto escalar},
-definido en \textit{GLSL} como "\textit{dot}", formalmente, \(\cdot :\mathbb{R}^2\times\mathbb{R}^2\longrightarrow \mathbb{R}^2\) 
-\[\Vec{r} \cdot  \Vec{v} = r_xv_x + r_yv_y + r_zv_z = \vert r\vert\vert v\vert\cos(\alpha)\]
-Si ambos son vectores directores, \(\Vec{r} \cdot \Vec{v} = \cos(\alpha)\). El ángulo \(\alpha\), es el menor de los ángulos entre los dos vectores sobre el plano que forman en el origen. La imagen de este operador es \([-1,1]\), es fácil observar que en vectores perpendiculares, el producto será cero y en caso de ser paralelos, este será \(\pm 1\) y el signo dependerá de la dirección de ambos.\\\\ 
-Además, vamos a presentar dos nuevos operadores\footnote{La demostración de ambos la podemos encontrar en: \url{http://www.cs.utexas.edu/users/bajaj/graphics2012/cs354/lectures/lect14.pdf}, página 7-9} que están implementados de manera nativa en el lenguaje \textit{GLSL}, esenciales para los modelos de iluminación:
-%https://es.m.wikipedia.org/wiki/Ley_de_Snell
-\begin{table}[h]
+definido en \textit{GLSL} como "\textit{dot}", formalmente, \(\cdot :\mathbb{R}^2\times\mathbb{R}^2\longrightarrow \mathbb{R}\) 
+\[\Vec{v} \cdot  \Vec{r} = v_xr_x + v_yr_y + v_zr_z = \vert \vert\Vec{v}\vert\vert\vert \Vec{r}\vert\vert\cos(\Theta)\]
+Si ambos son vectores están normalizados, \(\Vec{v} \cdot \Vec{r} = \cos(\alpha)\). El ángulo \(\Theta\), es el menor de los ángulos entre los dos vectores sobre el plano que forman en el origen. La imagen de este operador es \([-1,1]\), es fácil observar que, en vectores perpendiculares, el producto será cero y en caso de ser paralelos, este será \(\pm 1\) y el signo dependerá de la dirección de ambos. Con esta definición, podemos ahora presentar el operador de proyección de un vector \Vec{v} sobre otro \(\Vec{r}\), nos será muy útil de aquí en adelante:
+
+\[\Vec{v} \cdot  \Vec{r} = \vert\vert \Vec{v}\vert\vert\vert \Vec{r}\vert\vert\cos(\Theta)\Longleftrightarrow \dfrac{\Vec{r} \cdot  \Vec{v}}{\vert\vert \Vec{r}\vert\vert} = \vert\vert v\vert\vert\cos(\Theta)\]
+Utilizando la relación entre el cateto y la hipotenusa:
+\[\cos(\Theta)=\dfrac{\vert\vert \text{proy}_{\Vec{r}}\Vec{v}\vert\vert}{\vert\vert \Vec{v}\vert\vert}\Longleftrightarrow \vert\vert \text{proy}_{\Vec{r}}\Vec{v}\vert\vert=\vert\vert \Vec{v}\vert\vert\cos(\Theta)=\dfrac{\Vec{r} \cdot  \Vec{v}}{\vert\vert \Vec{r}\vert\vert}\]
+Finalmente, multiplicamos por el vector normalizado \(\text{norm}(r)\):
+\[ \text{proy}_{\Vec{r}}\Vec{v}=\left(\dfrac{\Vec{v}\cdot\Vec{r}}{\vert\vert \Vec{r}\vert\vert}\right)\dfrac{\Vec{r}}{\vert\vert\Vec{r}\vert\vert}=\left(\dfrac{\Vec{v}\cdot\Vec{r}}{\vert\vert \Vec{r}\vert\vert^2}\right)\Vec{r}=\left(\dfrac{\Vec{v}\cdot \Vec{r}}{\Vec{r}\cdot \Vec{r}}\right)\Vec{r}\]
+
+\begin{figure}[H]
+  \centering
+  \captionsetup{justification=centering}%,margin=2cm
+  \includegraphics[width=0.5\textwidth]{secciones/imagenes/sdf/proofs/proyection.png}
+  \caption{Proyección \(\Vec{v}\) sobre \(\Vec{r}\)}
+  \label{fig:proyection}
+\end{figure}
+Una vez visto estos dos operadores, podemos presentar dos nuevos operadores, implementados de manera nativa en el lenguaje \textit{GLSL} y que son esenciales las definición de un modelo de iluminación:
+\begin{table}[H]
     \begin{tabularx}{\textwidth}{l|X}
         \toprule
         Función & Definición\\
@@ -49,7 +62,7 @@ Además, vamos a presentar dos nuevos operadores\footnote{La demostración de am
           \tab[1cm]vecN v,\\
           \tab[1cm]vecN n, \\
           \tab[1cm]float k, \\
-          )} & El operador de refracción, un vector \(\Vec{v}\) refractado sobre el vector \(\Vec{n}\) normalizado, con \(k\) como factor de medio, equivalente a la \textit{ley de refracción de Snell-Descartes}:
+          )} & El operador de refracción, un vector \(\Vec{v}\) refractado sobre el vector \(\Vec{n}\) normalizado, con \(k\) como factor de medio:
         \[\Vec{r}=k\left(\Vec{v} - \left(\left(\Vec{n} \cdot \Vec{v}\right)+\sqrt{\dfrac{1}{k^2}-(\Vec{v}\cdot\Vec{n})^2}\right)\Vec{n}\right)\]
         \begin{minipage}{1.0\textwidth}
           \centering
@@ -58,6 +71,14 @@ Además, vamos a presentar dos nuevos operadores\footnote{La demostración de am
         \bottomrule
     \end{tabularx}
 \end{table}
+
+Veamos la demostración de ambos operadores. Para el operador de reflexión trabajaremos con tres vectores,  \(\Vec{n}\) un vector normal de la superficie, \(\Vec{v}\) el vector incidente y \(\Vec{r}\) el vector resultante. Observamos que, 
+\(\vert\vert \Vec{r}-(-\Vec{v})\vert\vert = 2\vert\vert\text{proy}_{\Vec{n}}(\Vec{-v})\vert\vert\), por lo que calcularemos el vector a la normal, \(\Vec{d}=\text{proy}_{\Vec{n}}(\Vec{v}) - (-\Vec{v})\), finalmente, desplazaremos el vector \(\Vec{v}\) dos veces \(\Vec{d}\), como vimos en la equivalencia anterior.
+\[\Vec{r}=(-\Vec{v}) + 2\Vec{d}=(-\Vec{v}) + 2(\text{proy}_{\Vec{n}}(-\Vec{v}) - (-\Vec{v}))= -2\text{proy}_{\Vec{n}}(\Vec{v}) + \Vec{v}\]
+
+Para el operador de refracción,
+, equivalente a la \textit{ley de refracción de Snell-Descartes}
+
 \newpage
 \section{Luz e Intensidad}
  Definimos la \textit{intensidad lumínica} en un punto como un factor multiplicativo al material asignado al punto de la \textit{isosuperficie}, representa cómo de iluminado está. Como es un factor multiplicativo, el valor de \(0.0\), representa la intensidad nula u oscuridad. Mientras que el valor \(1.0\) representa el valor más iluminado.\\\\ 
@@ -69,8 +90,9 @@ Se trata de un valor \(I_a \in [0,1]\) que indica cuanto de iluminada está la i
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-   \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/ambiental.png}\label{fig:ambient}
+   \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/ambiental.png}
   \caption{Intensidad Ambiental sobre la esfera.}
+  \label{fig:ambient}
 \end{figure}
 
 \subsection{Intensidad difusa}
@@ -80,8 +102,9 @@ Es fácil observar que, la intensidad debería ser máxima cuando los rayos inci
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/difusa.png}\label{fig:difusse}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/difusa.png}
   \caption{Intensidad Difusa sobre la esfera.}
+  \label{fig:difusse}
 \end{figure}
 \subsection{Intensidad especular}
 Esta intensidad indica como incide la luz reflectada  por la \textit{isosuperficie} en el la dirección del ojo. Definimos \enquote{\(\veebar\)}, como el operador de reflexión\ref{eq:reflexion}. La ecuación final de la \enquote{\textit{Intensidad Especular}} para todas las luces de la escena es,
@@ -93,12 +116,13 @@ Donde \(k\in\mathbb{R}^{+}\) y este tiene efecto sobre el radio de rayos refleja
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Intensidad especular con \(h_0(x)=x\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-0.png}\label{fig:specular-0}}
+  \subfloat[Intensidad especular con \(h_0(x)=x\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-0.png}}
   \hfill
-  \subfloat[Intensidad especular con \(h_1(x)=x^2\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-1.png}\label{fig:specular-1}}
+  \subfloat[Intensidad especular con \(h_1(x)=x^2\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-1.png}}
   \hfill
-  \subfloat[Intensidad especular con \(h_3(x)=x^8\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-2.png}\label{fig:specular-2}}
+  \subfloat[Intensidad especular con \(h_3(x)=x^8\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-2.png}}
   \caption{Intensidad Difusa con distintos homomorfismos}
+  \label{fig:specular}
 \end{figure}
 \subsection{Modelo de Phong}
 Resultado final del modelo, definido por la \textit{Intesidad del modelo de Phong}, se calcula como la suma de las intensidades expuestas anteriormente.
@@ -153,8 +177,9 @@ El enlace del ejemplo: \url{https://www.shadertoy.com/view/wtlBWr}\\
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/phong.png}\label{fig:phong}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/phong.png}
   \caption{Modelo de Phong sobre la esfera con \(h_3(x)=x^8\).}
+  \label{fig:phong}
 \end{figure}
 
 \section{Sombras}
@@ -230,8 +255,9 @@ Enlace del ejemplo: \url{https://www.shadertoy.com/view/wtfBW8}
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/sombra_dura.png}\label{fig:shadow}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/lightmodel/sombra_dura.png}
   \caption{Modelo de iluminación y sombras sobre la escena definida.}
+  \label{fig:shadow}
 \end{figure}
 
 Hemos visto como generar la umbra de una sombra, pero no la penumbra, la zona donde llega poca luz pero no está completamente a oscuras. Se han propuesto técnicas aproximadas ya que la penumbra exacta requiere de un alto coste computacional. Íñigo Quilez recopila varias de estas aproximaciones en una entrada en blog

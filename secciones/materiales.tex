@@ -95,8 +95,9 @@ vec2 escena_sdf(vec3 p){
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/material/materiales.png}\label{fig:material}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/material/materiales.png}
   \caption{Materiales asignados a las distintas figuras.}
+  \label{fig:material}
 \end{figure}
 
 Enlace del ejemplo:\url{https://www.shadertoy.com/view/wlBBRR}
@@ -115,7 +116,7 @@ vec4 obtenerMaterial(vec3 p, float id){
 }
 \end{lstlisting}
 
-Podemos utilizar el punto \(\Vec{p}\) para crear una proyección hacia el sistema de coordenadas de alguna textura asignada en un canal y que podemos acceder mediante el operador \enquote{texture} de \textit{GLSL}. Utilizaremos la textura creada en el ejemplo, \ref{fig:homotopies} y calcularemos la proyecicón de la esfera sobre las coordenadas de la textura:
+Podemos utilizar el punto \(\Vec{p}\) para calcular la proyección hacia el sistema de coordenadas de alguna textura \cite{projections}. que accederemos utilizando el operador \enquote{texture} de \textit{GLSL}. Utilizaremos la textura creada en el ejemplo, \ref{fig:homotopies} y calcularemos las coordenadas de textura de la esfera, para ello, utilizaremos la proyección cilíndrica, ibíd. \enquote{Parametrization for two dimensional textures - Parametrization of implicit surfaces}.
 \[\begin{pmatrix}
     u&
     v
@@ -154,6 +155,7 @@ El resultado:
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/material/textura.png}\label{fig:texture}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/material/textura.png}
   \caption{Textura asignada a la semiesfera}
+  \label{fig:texture}
 \end{figure}

@@ -7,11 +7,11 @@ Cuando tratamos \textit{funciones de distancia con signo no exactas}, utilizarem
 
 \begin{figure}[H]
   \centering
-  \subfloat[Se estima dentro de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sobreestimar-interior.png}\label{fig:estima_dentro}}
+  \subfloat[Se estima dentro de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sobreestimar-interior.png}}
   \hfill
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[Se estima fuera de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sobreestimar-exterior.png}\label{fig:estima_fuera}}
-  \caption{Dos formas de sobreestimar una superficie}
+  \subfloat[Se estima fuera de la superficie]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sobreestimar-exterior.png}}
+  \caption{Dos formas de sobreestimar una superficie}\label{fig:estimacion}
 \end{figure}
 
 Es difícil visualizar las circunsferencias deformadas, por lo que se ha realizado un esquema de las dos situaciones que podemos encontrar.
@@ -45,10 +45,11 @@ Veamos el efecto que implica este cambio sobre la deformación vista en \fullref
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[\textit{Marcher} orginal]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_twist.png}\label{fig:twistoriginal}}
+  \subfloat[\textit{Marcher} orginal]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/sdf/3d/sdf_twist.png}}
   \hfill
-  \subfloat[\textit{Marcher} sin sobreestimación en el interior]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sin_sobreestimacion_interior.png}\label{fig:stimateext}}
+  \subfloat[\textit{Marcher} sin sobreestimación en el interior]{\includegraphics[width=0.45\textwidth]{secciones/imagenes/estimation/sin_sobreestimacion_interior.png}}
   \caption{Comparativa de los cambios realizados en el \textit{Marcher}. A la izquierda, el \textit{Marcher} original, a la derecha, el marcher con \(\vert d_{n+1}\vert < \epsilon\)}
+  \label{fig:intestimacion}
 \end{figure}
 
 Enlace del ejemplo:\url{https://www.shadertoy.com/view/ttsBDs}
@@ -85,12 +86,13 @@ Efecto de distintos factores \(k\) al trazado de la escena por el \textit{Marche
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \subfloat[k=1.0]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sin_sobreestimacion_interior.png}\label{fig:twistoriginal1}}
+  \subfloat[k=1.0]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sin_sobreestimacion_interior.png}}
   \hfill
-  \subfloat[k=0.75]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_75.png}\label{fig:twist75}}
+  \subfloat[k=0.75]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_75.png}}
   \hfill
-  \subfloat[k=0.50]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_50.png}\label{fig:twist50}}
+  \subfloat[k=0.50]{\includegraphics[width=0.3\textwidth]{secciones/imagenes/estimation/sobreestimacion_50.png}}
   \caption{\(k\in\{1, 0.75, 0.5\}\) respectivamente sobre el \textit{Marcher}}
+  \label{fig:twistk}
 \end{figure}
 
 Enlace del ejemplo:
@@ -99,13 +101,14 @@ Enlace del ejemplo:
 %Vemos que la figura es \enquote{exacta} con \(k=0.5\) si observamos la esquina inferior izquierda de la tapadera. Este factor, o reducción de la esfera a la mitad, va a provocar que se requiera el doble de iteraciones para trazar una escena.
 
 \subsection{Subestimación de la distancia}
-Esta estimación puede ocurrir tanto en \textit{funciones de distancia con signo exactas e inexactas}. Ocurre cuando el \textit{Marcher} ha finalizado pero la distancia recorrida por el rayo es inferior a la del plano trasero, es decir, el rayo sigue estando presente en la escena. Por ejemplo, puede ocurrir cuando el rayo pasa de manera paralela, muy cerca a una superficie. Pero, en realidad, no está \enquote{sobre} ella, es decir, \(f(\Vec{rayo}) \ge \epsilon\). La siguiente imagen ilustra este problema:
+Este tipo de estimación puede ocurrir tanto en \textit{funciones de distancia con signo exactas como inexactas}. Cuando el \textit{Marcher} finaliza consumiendo todas las iteraciones disponibles, es decir, en la \textbf{Tercera condición}. Por ejemplo, puede ocurrir cuando el rayo pasa de manera paralela, muy cerca a una superficie. Pero, en realidad, no está \enquote{sobre} ella, es decir, \(f(\Vec{rayo}) \ge \epsilon\). La siguiente imagen ilustra este problema:
 
 \begin{figure}[H]
   \centering
   \captionsetup{justification=centering}%,margin=2cm
-  \includegraphics[width=1.0\textwidth]{secciones/imagenes/estimation/subestimacion.png}\label{fig:subestimacion}
+  \includegraphics[width=1.0\textwidth]{secciones/imagenes/estimation/subestimacion.png}
   \caption{Ejemplo de subestimación de una superficie}
+  \label{fig:subestimacion}
 \end{figure}
 
 Estos puntos serán tratados como \enquote{\textit{fallos}} y por tanto, como píxeles de fondo. Utilizar un factor de sobreestimación \(k > 1\) no sería la solución, ya que, crearía \textit{artefactos}. La principal solución es incrementar el número de iteraciones del algoritmo, es decir, incrementar el número de \enquote{\textit{PASOS}}, provocando un mayor gasto computacional.
