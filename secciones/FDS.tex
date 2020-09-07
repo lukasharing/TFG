@@ -3,10 +3,11 @@
 Hemos presentado anteriomente las funciones de distancia con signo como definición matemática. Ahora debemos hacernos las siguientes preguntas: ¿Cómo podemos definir \textit{funciones de distancia con signo}?, ¿qué tipo de funciones existen? y ¿qué operadores hay?.
 
 \begin{definition}
-Una función de distancia con signo, se dice exacta si está definido sobre la métrica euclídea.
+Una función de distancia con signo, se dice exacta si está definido sobre la métrica euclídea, cuyo gradiente es siempre \(1\).
 \end{definition}
 
-Vamos a definir algunas \textit{funciones de distancia con signo exactas}, que las denominaremos: \enquote{\textit{primitivas}}. En esta sección veremos primitivas sobre \(\mathbb{R}^2 \text{ y }\mathbb{R}^3\), definiéndolas centradas en el origen. Veremos también operadores para aplicar transformaciones sobre estas, como por ejemplo la traslación y la rotación. Las demostraciones de las funciones y operadores presentados en este trabajo son de propia cosecha.
+Encontramos esta definición en el blog de Íñigo Quilez \cite{3ddistinigo}. Finalmente,
+ vamos a definir algunas \textit{funciones de distancia con signo exactas}, que las denominaremos: \enquote{\textit{primitivas}}. En esta sección veremos primitivas sobre \(\mathbb{R}^2 \text{ y }\mathbb{R}^3\), definiéndolas centradas en el origen. Veremos también operadores para aplicar transformaciones sobre estas, como por ejemplo la traslación y la rotación. Las demostraciones de las funciones y operadores presentados en este trabajo son de propia cosecha.
 
 \section{Primitivas sobre \(\mathbb{R}^2\)}
 Vamos a estudiar algunas de las primitivas en \(\mathbb{R}^2\), que serán fundamentales para definir las de una dimensión superior, \(\mathbb{R}^3\). Para este apartado, utilizaremos como referencia \enquote{2d distance functions - Primitives}, una entrada del blog de Íñigo Quilez \cite{2ddistinigo}. Vamos a crear un pequeño código que utilizaremos para presentar estas funciones:
@@ -161,7 +162,7 @@ float SDFSegmento(vec2 p, vec2 a, vec2 b){
 Enlace del ejemplo: \url{https://www.shadertoy.com/view/wllBRl}
 
 Existen infinitas \textit{funciones de distancia con signo exactas} y aún quedan muchas por definir. Vamos a presentar operadores que nos van a ayudar a transformar estas funciones, resultando de otras que pueden o no preservar la \textit{exactitud}.\\\\
-Algunas \textit{funciones de distancia con signo} no presentadas aquí y que podemos encontrar en el blog de \textit{Íñigo Quilez}, pueden ser demostradas utilizando las propiedades y operadores vistos en los apartados anteriores, por ejemplo, la definición exacta del triángulo hace uso de dos segmentos para dos de sus lados conectados por una arista y las coordenadas baricéntricas\footnote{El sistema de coordenadas baricéntrico se generar a partir del baricentro, es decir, el punto de corte de las tres rectas que pasan por el centro de un lado y por el vértice opuesto. Podemos encontrar la demostración de la distancia en el siguiente enlace: \url{https://mathoverflow.net/a/36669}}.
+Algunas \textit{funciones de distancia con signo} no presentadas aquí y que podemos encontrar en el blog de \textit{Íñigo Quilez}, pueden ser demostradas utilizando las propiedades y operadores vistos en los apartados anteriores, por ejemplo, la definición exacta del triángulo hace uso de dos segmentos para dos de sus lados conectados por una arista y las coordenadas baricéntricas\footnote{El sistema de coordenadas baricéntrico se generar a partir del baricentro, es decir, el punto de corte de las tres rectas que pasan por el centro de un lado y por el vértice opuesto.}, \cite{36669}.
 
 \section{Operadores sobre \(\mathbb{R}^2\)}
 Vamos a ver operadores imprescindibles para poder manipular nuestra escena, además de poder crear nuevas \textit{funciones de distancia con signo exactas}, utilizaremos de referencia el post de Iñigo Quilez, \enquote{distance functions - Positioning} \cite{3ddistinigo}. Estos operadores pueden preservar o no la exactitud de nuestras funciones, aquellos operadores que la preserven, los llamaremos \textit{isometrías}.
@@ -201,7 +202,7 @@ Enlace del ejemplo:
 \url{https://www.shadertoy.com/view/ttXfWS}
 
 \subsection{Operador de rotación}
-El segundo operador que vamos a presentar es el operador de rotación, ibíd. \enquote{Rotation/Translation - exact}. Se define como la matriz de rotación\footnote{Esta matriz es definida por el mapeo de coordenadas polares y la linearidad. La demostración la encontramos en el siguiente enlace: \url{https://math.stackexchange.com/a/53181}}, donde \(\alpha\) es el ángulo de rotación en radianes y es una matriz ortogonal\footnote{Una matriz se dice ortogonal, si y solo si, \(A\cdot A^t=I\). La demostración de que la matriz de rotación es ortogonal:  \url{https://math.stackexchange.com/a/2471175}}:
+El segundo operador que vamos a presentar es el operador de rotación, ibíd. \enquote{Rotation/Translation - exact}. Se define como la matriz de rotación\footnote{Esta matriz es definida por el mapeo de coordenadas polares y la linearidad. La demostración}, \cite{53181}. Donde \(\alpha\) es el ángulo de rotación en radianes y es una matriz ortogonal\footnote{Una matriz se dice ortogonal, si y solo si, \(A\cdot A^t=I\)}, \cite{2471175}.
 \[ 
 \text{rot}(\alpha)=\begin{pmatrix}
     +\cos(\alpha) & -\sin(\alpha)\\
@@ -229,7 +230,7 @@ Resultando,
 \]
 Veamos que el operador también es una \textit{isometría}, \(\forall \Vec{v},\Vec{w}\in\mathbb{R}^2\):
 \[d(f(\Vec{v}), f(\Vec{w}))=d(\Vec{v}\cdot \text{rot}(\alpha), \Vec{w}\cdot \text{rot}(\alpha))=\]\[\vert\vert \Vec{v}\cdot \text{rot}(\alpha)- \Vec{w}\cdot \text{rot}(\alpha)\vert\vert=\vert\vert(\Vec{v}-\Vec{w})\cdot \text{rot}(\alpha)\vert\vert\]
-Como \(\text{rot}(\alpha)\) es ortogonal: \(\vert\vert A\cdot\text{rot}(\alpha)\vert\vert=\vert\vert A\vert\vert\).\footnote{La demostración de esta propiedad requiere un alto conocimiento matemático, como curiosidad, encontramos la demostración en el siguiente enlace: \url{https://math.stackexchange.com/a/2245861}}
+Como \(\text{rot}(\alpha)\) es ortogonal: \(\vert\vert A\cdot\text{rot}(\alpha)\vert\vert=\vert\vert A\vert\vert\), \cite{2245861}.
 \[d(f(\Vec{v}), f(\Vec{w}))=\vert\vert(\Vec{v}-\Vec{w})\cdot \text{rot}(\alpha)\vert\vert=\vert\vert\Vec{v}-\Vec{w}\vert\vert=d(\Vec{v},\Vec{w})\]
 En código:
 \begin{lstlisting}
@@ -442,7 +443,6 @@ El resultado del escalado es el siguiente:
   \caption{Ejemplo anterior escalado con \(k=0.5\)}
   \label{fig:substraction}
 \end{figure}
-
 
 Enlace del ejemplo:\url{https://www.shadertoy.com/view/WlsBDX}
 

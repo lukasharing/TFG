@@ -40,7 +40,7 @@ Finalmente, multiplicamos por el vector normalizado \(\text{norm}(r)\):
   \caption{Proyección \(\Vec{v}\) sobre \(\Vec{r}\)}
   \label{fig:proyection}
 \end{figure}
-Una vez visto estos dos operadores, podemos presentar dos nuevos operadores, implementados de manera nativa en el lenguaje \textit{GLSL} y que son esenciales las definición de un modelo de iluminación:
+Una vez visto estos dos operadores, podemos presentar un nuevo operador, implementado de manera nativa en el lenguaje \textit{GLSL} y que es esenciales las definición de un modelo de iluminación:
 \begin{table}[H]
     \begin{tabularx}{\textwidth}{l|X}
         \toprule
@@ -51,35 +51,21 @@ Una vez visto estos dos operadores, podemos presentar dos nuevos operadores, imp
           \tab[1cm]vecN v,\\
           \tab[1cm]vecN n, \\
           )}& Operador de reflexión de un vector \(\Vec{v}\) sobre el vector normal \(\Vec{n}\), definido como:
-        \[\Vec{r}=\Vec{v} - 2(\Vec{n} \cdot \Vec{v})\Vec{n} \label{eq:reflexion}\]
+        \[\Vec{r}=\Vec{v} - 2(\Vec{n} \cdot \Vec{v})\Vec{n}\]
+        
         \begin{minipage}{1.0\textwidth}
           \centering
           \includegraphics[width=.25\textwidth]{secciones/imagenes/lightmodel/reflect.png}
         \end{minipage}
         \\
-        \pbox{10cm}{
-        refract(\\
-          \tab[1cm]vecN v,\\
-          \tab[1cm]vecN n, \\
-          \tab[1cm]float k, \\
-          )} & El operador de refracción, un vector \(\Vec{v}\) refractado sobre el vector \(\Vec{n}\) normalizado, con \(k\) como factor de medio:
-        \[\Vec{r}=k\left(\Vec{v} - \left(\left(\Vec{n} \cdot \Vec{v}\right)+\sqrt{\dfrac{1}{k^2}-(\Vec{v}\cdot\Vec{n})^2}\right)\Vec{n}\right)\]
-        \begin{minipage}{1.0\textwidth}
-          \centering
-          \includegraphics[width=.3\textwidth]{secciones/imagenes/lightmodel/refract.png}
-        \end{minipage}\\
         \bottomrule
     \end{tabularx}
+    \caption{Operador de reflexión en GLSL \label{eq:reflexion}}
 \end{table}
 
-Veamos la demostración de ambos operadores. Para el operador de reflexión trabajaremos con tres vectores,  \(\Vec{n}\) un vector normal de la superficie, \(\Vec{v}\) el vector incidente y \(\Vec{r}\) el vector resultante. Observamos que, 
+El operador de reflexión trabaja con tres vectores,  \(\Vec{n}\) un vector normal de la superficie, \(\Vec{v}\) el vector incidente y \(\Vec{r}\) el vector resultante. Observamos que, 
 \(\vert\vert \Vec{r}-(-\Vec{v})\vert\vert = 2\vert\vert\text{proy}_{\Vec{n}}(\Vec{-v})\vert\vert\), por lo que calcularemos el vector a la normal, \(\Vec{d}=\text{proy}_{\Vec{n}}(\Vec{v}) - (-\Vec{v})\), finalmente, desplazaremos el vector \(\Vec{v}\) dos veces \(\Vec{d}\), como vimos en la equivalencia anterior.
 \[\Vec{r}=(-\Vec{v}) + 2\Vec{d}=(-\Vec{v}) + 2(\text{proy}_{\Vec{n}}(-\Vec{v}) - (-\Vec{v}))= -2\text{proy}_{\Vec{n}}(\Vec{v}) + \Vec{v}\]
-
-Para el operador de refracción,
-, equivalente a la \textit{ley de refracción de Snell-Descartes}
-
-\newpage
 \section{Luz e Intensidad}
  Definimos la \textit{intensidad lumínica} en un punto como un factor multiplicativo al material asignado al punto de la \textit{isosuperficie}, representa cómo de iluminado está. Como es un factor multiplicativo, el valor de \(0.0\), representa la intensidad nula u oscuridad. Mientras que el valor \(1.0\) representa el valor más iluminado.\\\\ 
 El operador \textit{producto escalar} nos debería dar una breve intuición del papel importante que juega en el cálculo de la intensidad. Como esta no puede ser negativa, definimos el operador producto escalar positivo y normalizado "\(\cdot_{[0,1]}\)".
@@ -109,7 +95,7 @@ Es fácil observar que, la intensidad debería ser máxima cuando los rayos inci
 \subsection{Intensidad especular}
 Esta intensidad indica como incide la luz reflectada  por la \textit{isosuperficie} en el la dirección del ojo. Definimos \enquote{\(\veebar\)}, como el operador de reflexión\ref{eq:reflexion}. La ecuación final de la \enquote{\textit{Intensidad Especular}} para todas las luces de la escena es,
 \[I_e = \sum_{\Vec{l_i}\in L} \Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\]
-Algunos autores aportan una leve modificación de esta ecuación, aplicando un \textit{homeomorfismo} polinómico con grado exponencial, que es utilizado como factor de brillo\footnote{En \textit{OpenGL}, el brillo por reflexión depende de un parámetro de  \textit{glMaterial}, \textit{GL\_SHININESS}. \url{https://www.khronos.org/registry/OpenGL-Refpages/es1.1/xhtml/glMaterial.xml}}.
+Algunos autores aportan una leve modificación de esta ecuación, aplicando un \textit{homeomorfismo} polinómico con grado exponencial, que es utilizado como factor de brillo\footnote{En \textit{OpenGL}, el brillo por reflexión depende de un parámetro de  \textit{glMaterial}, \textit{GL\_SHININESS}.}, \cite{glmaterial}.
 \[h_k:[0,1]\longrightarrow[0,1] , h_k(x)=x^{2^k}\]
 \[I_d = \sum_{\Vec{l_i}\in L} h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)\]
 Donde \(k\in\mathbb{R}^{+}\) y este tiene efecto sobre el radio de rayos reflejados.
@@ -121,15 +107,16 @@ Donde \(k\in\mathbb{R}^{+}\) y este tiene efecto sobre el radio de rayos refleja
   \subfloat[Intensidad especular con \(h_1(x)=x^2\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-1.png}}
   \hfill
   \subfloat[Intensidad especular con \(h_3(x)=x^8\)]{\includegraphics[width=0.30\textwidth]{secciones/imagenes/lightmodel/especular-2.png}}
-  \caption{Intensidad Difusa con distintos homomorfismos}
+  \caption{Intensidad Difusa con distintos homeomorfismos}
   \label{fig:specular}
 \end{figure}
 \subsection{Modelo de Phong}
 Resultado final del modelo, definido por la \textit{Intesidad del modelo de Phong}, se calcula como la suma de las intensidades expuestas anteriormente.
 \[I_{Phong}=I_a+\sum_{\Vec{l_i}\in L} \mathrlap{\underbrace{\phantom{\Vec{n}\cdot_{[0, 1]}(\Vec{l_i}-\Vec{p})}}_{\text{Intensidad Difusa}}}\Vec{n}\cdot_{[0, 1]}(\Vec{l_i}-\Vec{p}) + \mathrlap{\underbrace{\phantom{h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)}}_{\text{Intensidad Especular}}}h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)\]
-En luces direccionales, el punto se considera estar en el infinito, sustituyéndose \(\Vec{l_i}-\Vec{p}\) por el vector director de la luz direccional \(\Vec{d_i}\). En algunas implementaciones, se utiliza para cada luz, un factor de atenuación que depende de la distancia de la superficie a la luz, esta función converge a cero en el infinito. En caso de utilizar luces direccionales, el valor que tomará  será cero si \(f(d)\) no es constante, anulándose el aporte de \textit{Intensidad Especular} de esta luz.\\\\En particular, OpenGL hace uso de la siguiente función de atenuación:
+En luces direccionales, el punto se considera estar en el infinito, sustituyéndose \(\Vec{l_i}-\Vec{p}\) por el vector director de la luz direccional \(\Vec{d_i}\). En algunas implementaciones, se utiliza para cada luz, un factor de atenuación que depende de la distancia de la superficie a la luz, esta función converge a cero en el infinito. En caso de utilizar luces direccionales, el valor que tomará  será cero si \(f(d)\) no es constante, anulándose el aporte de \textit{Intensidad Especular} de esta luz.\\\\
+En particular, OpenGL\cite{gllight} hace uso de la siguiente función de atenuación:
 \[f(d)=\dfrac{1}{k_qd^2+k_ld+k_c}\]
-Donde \(k_q,k_l,k_c \in \mathbb{R}^{+}_{0}\) son tres parámetros de atenuación \footnote{Cada parámetro corresponde en OpenGL con un parámetro de la clase \textit{glLight}: \(k_q\) con \textit{GL\_QUADRATIC\_ATTENUATION}; el factor \(k_l\) con \textit{GL\_LINEAR\_ATTENUATION}; finalmente, \(k_c\) con el parámetro, \textit{GL\_CONSTANT\_ATTENUATION}. \url{https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glLight.xml}}.\\\\
+Donde \(k_q,k_l,k_c \in \mathbb{R}^{+}_{0}\) son tres parámetros de atenuación \footnote{Cada parámetro corresponde en OpenGL con un parámetro de la clase \textit{glLight}: \(k_q\) con \textit{GL\_QUADRATIC\_ATTENUATION}; el factor \(k_l\) con \textit{GL\_LINEAR\_ATTENUATION}; finalmente, \(k_c\) con el parámetro, \textit{GL\_CONSTANT\_ATTENUATION}.}.\\\\
 La intensidad es un factor, que multiplica al valor del píxel a mostrar, que es tomado del material de la figura\ref{ch:material}, aunque en estos ejemplos, devolveremos como color, el valor de la intensidad, resultando de una imagen en escala de grises.\\\\
 Veamos un ejemplo práctico, vamos a añadir dos luces, una direccional desde uno de los laterales de la escena y otra luz, radial. Además vamos a utilizar el \textit{homeomorfismo} \(h_3(x)=x^{2^3}\).\\
 
@@ -260,8 +247,7 @@ Enlace del ejemplo: \url{https://www.shadertoy.com/view/wtfBW8}
   \label{fig:shadow}
 \end{figure}
 
-Hemos visto como generar la umbra de una sombra, pero no la penumbra, la zona donde llega poca luz pero no está completamente a oscuras. Se han propuesto técnicas aproximadas ya que la penumbra exacta requiere de un alto coste computacional. Íñigo Quilez recopila varias de estas aproximaciones en una entrada en blog
-\enquote{Iquilezles - Soft Shadows in Raymarched SDFs - 2010}\footnote{\url{https://www.iquilezles.org/www/articles/rmshadows/rmshadows.htm}}
+Hemos visto como generar la umbra de una sombra, pero no la penumbra, la zona donde llega poca luz pero no está completamente a oscuras. Íñigo Quilez recopila varias de estas aproximaciones \cite{softshadows}.
 
 
 \newpage

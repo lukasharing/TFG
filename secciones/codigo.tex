@@ -1,22 +1,23 @@
 \chapter{Lenguaje GLSL\label{ch:glsl}}
 
-Vamos a presentar el lenguaje \textit{OpenGL Shading Language}, \textit{GLSL}\footnote{La documentación\label{footnote:doc} oficial del lenguaje: \url{https://www.khronos.org/registry/OpenGL/specs/gl/GLSLangSpec.4.40.pdf}} del que hace uso la tecnología web actual, \textit{WebGL}\footnote{Esta información es tomada del consorcio industrial \textit{Khronos} de estándares abiertos. \url{https://www.khronos.org/webgl/}}. Este lenguaje tiene una sintaxis similar a C y que comparte con muchos otros lenguajes del mismo propósito, por ejemplo, \textit{High Level Shader Language}\footnote{Es un lenguaje desarrollado por la empresa \textit{Microsoft} para su \textit{pipeline} gráfico de su colección de \textit{APIS}, \textit{DirectX}. \url{https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl}}, \textit{HLSL}.\\\\
+Vamos a presentar el lenguaje \textit{OpenGL Shading Language}, \textit{GLSL} \cite{glsl} del que hace uso la tecnología web actual, \textit{WebGL}\footnote{Esta información es tomada del consorcio industrial \textit{Khronos} de estándares abiertos. \url{https://www.khronos.org/webgl/}}. Este lenguaje tiene una sintaxis similar a C y que comparte con muchos otros lenguajes del mismo propósito, por ejemplo, \textit{High Level Shader Language}\footnote{Es un lenguaje desarrollado por la empresa \textit{Microsoft} para su \textit{pipeline} gráfico de su colección de \textit{APIS}, \textit{DirectX}.}, \textit{HLSL} \cite{hlsl}.\\\\
 Estos lenguajes son utilizados para la creación de \textit{shaders}, una aplicación ejecutada por la \textit{GPU} capaz de modificar la geometría, \textit{Vertex Shader} o el color, \textit{Fragment Shader}. Estos son ejecutados en una de las etapas de procesado gráfico enlazados por una \textit{API}. Una \textit{API} define un conjunto de protocolos para la intercomunicación con otros, en particular, \textit{OpenGL Shading Language} usa como \textit{API} \textit{WebGL}. Vamos a presentar algunos de los tipos presentes en el lenguaje, funciones matemáticas y operadores de acceso a texturas.\\\\
 
 \section{Tipos}
 \begin{table}[H]
-\begin{tabularx}{\textwidth}{l|X}
-  \toprule
-  Tipo & Definición\\
-  \midrule
-  int & Entero con signo como.\\
-  float & Número real, con precisión de 32 bits. \\
-  bool & Ocupa un 8bits y representa dos valores, \textit{true} o \textit{false}. \\
-  vecN & Un vector matemático, N-upla de floats, encontramos definidos: vec2, vec3, vec4. \\
-  matN & Se trata de una matriz cuadrada N-dimensional, de floats, definidas: mat2, mat3, mat4. \\
-  matNxM & Una matriz rectangular de dimensiones \(N\times M\), encontramos: mat2x2, mat2x3, mat2x4, mat3x2, mat3x3, mat3x4, mat4x2, mat4x3, mat4x4. \\
-  \bottomrule
-\end{tabularx}
+    \begin{tabularx}{\textwidth}{l|X}
+      \toprule
+      Tipo & Definición\\
+      \midrule
+      int & Entero con signo como.\\
+      float & Número real, con precisión de 32 bits. \\
+      bool & Ocupa un 8bits y representa dos valores, \textit{true} o \textit{false}. \\
+      vecN & Un vector matemático, N-upla de floats, encontramos definidos: vec2, vec3, vec4. \\
+      matN & Se trata de una matriz cuadrada N-dimensional, de floats, definidas: mat2, mat3, mat4. \\
+      matNxM & Una matriz rectangular de dimensiones \(N\times M\), encontramos: mat2x2, mat2x3, mat2x4, mat3x2, mat3x3, mat3x4, mat4x2, mat4x3, mat4x4. \\
+      \bottomrule
+    \end{tabularx}
+    \caption{Algunos tipos presentes en el lenguaje \label{eq:types}}
 \end{table}
 \newpage
 \section{Enlaces\label{sec:enlaces}}
@@ -40,6 +41,7 @@ El tipo vector, \textit{vecN}, definido por una tupla: \((x, y[, z[, w]])\) ó \
       vecN(vecP, vecQ) & Los \(P\) primeros atributos del vector asignados por las componentes de \textit{vecP} y los Q restantes, de las componentes del vector \textit{vecQ}, \(N = P + Q\). \\
       \bottomrule
     \end{tabularx}
+    \caption{Constructor de vectores en GLSL \label{eq:vecN}}
 \end{table}
 El operador de acceso, \enquote{.}, a las compentes del vector, devolviendo un nuevo vector o \textit{float} formado por las valores en el orden accedido. Presentamos algunos de los operadores vectoriales implementados en el lenguaje:
 \begin{table}[H]
@@ -54,6 +56,7 @@ El operador de acceso, \enquote{.}, a las compentes del vector, devolviendo un n
       cross(vecN v1, vecN v2) & \textbf{producto vectorial} de los dos vectores. \\
       \bottomrule
     \end{tabularx}
+    \caption{Funciones con vectores en GLSL \label{eq:vecopN}}
 \end{table}
 
 Veamos algunos ejemplos de vectores puestos en práctica:
@@ -89,8 +92,10 @@ vec2 vector8 = vec2(
     length(vector.xz), 
     vector.y
 );
+\end{lstlisting}
 
-// Ejemplo de errores:
+Algunos ejemplos de errores sintácticos:
+\begin{lstlisting}
 // 1. Dimensionalidad incorrecta:
 vec3 error = vec3(1.0, 0.5);
 vec2 error = vector.rrr;
@@ -132,6 +137,7 @@ Alguno de los constructores para la creación de estas matrices son:
       } & Formado por \(N\) vectores (M -1)-dimensionales y M valores flotantes. \\
       \bottomrule
     \end{tabularx}
+    \caption{Constructor de matrices en GLSL \label{eq:consmatN}}
   \end{table}
 Hemos visto algunos ejemplos, pero existen una gran variedad de combinaciones posibles. Estas combinaciones tienen que respetar siempre el tamaño de la matriz, pudiéndose intercalar vectores \textit{vecN} y valores flotantes.\\\\
 De la misma forma, vamos a ver alguno de los operadores entre matrices.
@@ -145,6 +151,7 @@ De la misma forma, vamos a ver alguno de los operadores entre matrices.
       determinant(matN matrix) & Devuelve el determinante de una matriz cuadradas. \\
       \bottomrule
     \end{tabularx}
+    \caption{Funciones con matrices en GLSL \label{eq:matN}}
 \end{table}
 Algunos ejemplos de contrucción de matrices, acceso a sus componentes y operadores:
 \begin{lstlisting}
@@ -178,8 +185,10 @@ vec2 vector1 = matrix2x2[0];
 mat3 tmatrix3x3 = transpose(matrix3x3);
 // Multiplicación
 mat2x3 mulmatrix2x3 = matrix2x2 * matrix2x3;
+\end{lstlisting}
 
-// Errores
+Errores
+\begin{lstlisting}
 // 1. Error número de componentes
 mat2 matriz = mat2(1.0, 0.0);
 // 2. Error de dimensionalidad.
@@ -188,7 +197,7 @@ mat2 matriz = mat2(vec3(1.0), vec3(0.0));
 mat2 matrix = matrix2x2 * matrix3x3;
 \end{lstlisting}
 \section{Operadores matemáticos}
-Encontramos los operadores usuales: \(+,-,*,/,\%\). Para los números enteros, tenemos también los operadores binarios: \({<<, >>, \mid, \And, \string^}\). Agrupamos \textit{float} y \textit{vecN} con el nombre de \textit{genType}\footnote{Este término es utilizado en la documentación del lenguaje\ref{footnote:doc}, \enquote{8. Built-in Functions}, páginas 140-141} para reunir los tipos de argumentos. Cuando utilizamos un operador sobre el tipo \textit{vecN}, este se aplicará sobre cada una de sus componentes. Algunos operadores trigonométricos y exponenciales son los siguientes:
+Encontramos los operadores usuales: \(+,-,*,/,\%\). Para los números enteros, tenemos también los operadores binarios: \({<<, >>, \mid, \And, \string^}\). Agrupamos \textit{float} y \textit{vecN} con el nombre de \textit{genType} (\cite{glsl}, \enquote{8. Built-in Functions} páginas 140-141), para reunir los tipos de argumentos. Cuando utilizamos un operador sobre el tipo \textit{vecN}, este se aplicará sobre cada una de sus componentes. Algunos operadores trigonométricos y exponenciales son los siguientes:
 \begin{table}[H]
     \begin{tabularx}{\textwidth}{l|X}
       \toprule
@@ -213,6 +222,7 @@ Encontramos los operadores usuales: \(+,-,*,/,\%\). Para los números enteros, t
       sqrt(genType var) & Aplica \(f(x)=\sqrt{x}\) sobre la variable. \\
       \bottomrule
     \end{tabularx}
+    \caption{Algunos operadores matemáticos en GLSL \label{eq:matop1}}
 \end{table}
 Ejemplos de equivalencias de los operadores:
 \begin{lstlisting}
@@ -224,7 +234,9 @@ float powk = pow(2., 2.); // 4.0
 // Ecuacion compleja
 float complejo = log(exp(-cos(0.))); // -1.0 
 vec2 complejo2 = cos(acos(vec2(0.)));//vec2(0)
-// Error, los dos tipos no son iguales.
+\end{lstlisting}
+Veamos un error y cual es la solución al problema.
+\begin{lstlisting}
 float error = pow(vec2(0., 2.), 3.);
 // Solución
 float solucion = pow(vec2(0., 2.), vec2(3.));
@@ -258,6 +270,7 @@ Otros operadores, también importantes, son:
       )} & Aplica \textit{la función de mezcla con peso}\ref{def:mix}, sobre la variable, donde \(f(x) = a, g(x) = b\text{ y } t = h\).\\
       \bottomrule
     \end{tabularx}
+    \caption{Más operadores matemáticos en GLSL \label{eq:matop2}}
 \end{table}
 Algunos otros ejemplos y sus equivalencias:
 \begin{lstlisting}
