@@ -4,9 +4,9 @@
 % https://it.wikipedia.org/wiki/Isosuperficie#cite_note-:2-3
 \section{Funciones de distancia con signo\label{sec:fds}}
 
-Una función de distancia con signo (\textit{FDS}) se trata de una aplicación \(f: \mathbb{R}^n\longrightarrow \mathbb{R}\). Esta aplicación transforma un punto \(\Vec{p}\) de un espacio multidimensional en un valor. En particular, trabajaremos con espacios bidimensionales y tridimensionales, donde el valor devuelto es la distancia mínima con signo hasta un punto \(\Vec{q}\) de un perímetro o una superficie \(S\). 
+Una función de distancia con signo (\textit{FDS}) se trata de una aplicación \(f: \mathbb{R}^n\longrightarrow \mathbb{R}\). Esta aplicación transforma un punto \(\Vec{p}\) de un espacio multidimensional en un valor. En particular, trabajaremos con espacios bidimensionales y tridimensionales, donde el valor devuelto es la distancia mínima con signo hasta un punto \(\Vec{q}\) de un perímetro o una superficie \(S\)  \cite{hart1996sphere}. 
 \[f(\Vec{p})=\pm min_{\Vec{q}\in S}\vert\vert \Vec{p}-\Vec{q} \vert\vert , \Vec{p} \in \mathbb{R}^n, n\in \{2,3\}\]
-El signo de esta distancia contiene información sobre la escena: con una distancia positiva, nos encontramos en el exterior de una figura, en caso de ser cero, nos encontraremos en la superficie (corteza) \(S\), por último, con una distancia negativa, estaremos dentro del volúmen de la figura, que en positivo representa la profundidad del punto respecto de la corteza \cite{hart1996sphere}. 
+El signo de esta distancia contiene información sobre la escena: con una distancia positiva, nos encontramos en el exterior de una figura, en caso de ser cero, nos encontraremos en la superficie (corteza) \(S\), por último, con una distancia negativa, estaremos dentro del volúmen de la figura, que en positivo representa la profundidad del punto respecto de la corteza. 
 
 \begin{definition}
 	Sea \(f:\mathbb{R}^2\longrightarrow\mathbb{R}\), una función de distancia con signo, definimos como \textit{isoperímetro}, \(L=\{\Vec{p} \vert f(\Vec{p})=0\}\).

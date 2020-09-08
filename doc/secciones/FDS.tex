@@ -526,7 +526,7 @@ Enlace del ejemplo:\url{https://www.shadertoy.com/view/WtlBDj}
 \subsection{Plano con signo}
 % TODO: Ordenar el texto de la normal.
 Vamos a ver una figura muy importante, el plano con signo divide a \(\mathbb{R}^3\) en dos, uno tendrá valores positivos y el otro, negativos. El signo del producto escalar con la normal del plano indicará en que subespacio se encuentran los puntos. Para esto, definimos el operador del signo de un número:  \(\text{sign}(a)=\pm 1, 0\).\\\\
-En secciones siguientes, veremos por qué es útil el signo de esta función, definiendo así otro operador. Su demostración se basa en la proyección de un punto \(\Vec{p}\) en el plano\footnote{Podemos definir un plano a partir de su normal y un punto, en particular, el punto será \(0,0,0\) y la normal será un parámetro introducido por el usuario. Formalmente lo encontramos en el siguiente enlace \url{https://mathworld.wolfram.com/Plane.html}.}, centrado en el origen y con un vector normal \(\Vec{n}\).
+En secciones siguientes, veremos por qué es útil el signo de esta función, definiendo así otro operador. Su demostración se basa en la proyección de un punto \(\Vec{p}\) en el plano\footnote{Podemos definir un plano a partir de su normal y un punto, en particular, el punto será \(0,0,0\) y la normal será un parámetro introducido por el usuario.} \cite{wolfram}, centrado en el origen y con un vector normal \(\Vec{n}\).
 \[\text{proy}_{\Vec{n}}(\Vec{p}) = \Vec{p} - (\Vec{n}\cdot\Vec{p})\Vec{n} \]
 Por lo que la distancia con signo a este:
 \[ SDFPlano_{\Vec{n}}(\Vec{p})=\text{sign}\left((\Vec{p}-\text{proy}_{\Vec{n}}(\Vec{p})\right) \cdot \Vec{n})\cdot \vert \vert \Vec{p} - \text{proy}_{\Vec{n}}(\Vec{p}) \vert\vert \]
