@@ -111,4 +111,8 @@ Este tipo de estimación puede ocurrir tanto en \textit{funciones de distancia c
   \label{fig:subestimacion}
 \end{figure}
 
-Estos puntos serán tratados como \enquote{\textit{fallos}} y por tanto, como píxeles de fondo. Utilizar un factor de sobreestimación \(k > 1\) no sería la solución, ya que, crearía \textit{artefactos}. La principal solución es incrementar el número de iteraciones del algoritmo, es decir, incrementar el número de \enquote{\textit{PASOS}}, provocando un mayor gasto computacional. John C. Hart propone en su publicación una optimización para una convergencia rápida en figuras convexas \cite{hart1996sphere} (\enquote{Convexity - Theorem 4}, pág. 534). 
+Estos puntos serán tratados como \enquote{\textit{fallos}} y por tanto, como píxeles de fondo. Utilizar un factor de sobreestimación \(k > 1\) no sería la solución, ya que, crearía \textit{artefactos}. La principal solución es incrementar el número de iteraciones del algoritmo, es decir, incrementar el número de \enquote{\textit{PASOS}}, provocando un mayor gasto computacional. John C. Hart propone en su publicación una optimización para una convergencia rápida en figuras convexas \cite{hart1996sphere} (\enquote{Convexity - Theorem 4}, pág. 534), donde manipula el factor de sobre estimación:
+\[ k = \dfrac{1}{-\Vec{\text{direccion}}\cdot \nabla f(x)} \]
+
+y se añade una nueva condición de parada, tal que, 
+\enquote{\(\Vec{\text{direccion}}\cdot \nabla f(x) \ge 0\)} que asegura que el rayo intersecte con una superficie.
