@@ -1,0 +1,147 @@
+\section{Lenguaje GLSL}
+
+\SectionPage
+
+\begin{frame}{Tipos}
+    
+    Mantiene una sintaxis similar a C, encontramos los siguientes tipos más importantes.
+    \vfill
+    
+    \begin{itemize}
+        \item \textbf{int}. Entero con signo.
+        \item \textbf{float}. Número real, con precisión de 32 bits.
+        \item \textbf{bool}. Ocupa un byte, \textit{true} o \textit{false}.
+        \item \textbf{vecN}. Vector matemático, \(N\)-úpla de floats.\\Definidos: vec2, vec3, vec4.
+        \item \textbf{matN}. Matriz cuadrada de dimension \(N\).\\Encontramos: mat2, mat3, mat4.
+        \item \textbf{matNxM}. Matriz de dimensiones \(N\times M\).\\Encontramos: mat2x2, mat2x3, mat2x4, mat3x2, mat3x3, mat3x4, mat4x2, mat4x3, mat4x4.
+    \end{itemize}
+    
+\end{frame}
+
+\subsection{Vectores}
+\begin{frame}{Vectores}
+
+    El  tipo  vector, vecN,  definido  por  una  t-úpla:  \((x,y[,z[,w]])\) ó \((r,g[,b[,a]])\). Utilizaremos el operador \enquote{.} para acceder y copiar estas componentes.
+    \vfill
+    
+    \begin{columns}[onlytextwidth]
+        \begin{column}{0.45\textwidth}
+            {\Large Constructores}
+            \begin{itemize}
+                \item vecN(float,···, float)
+                \item vecN(vecM, float)
+                \item vecN(float, vecM)
+                \item vecN(vecP, vecQ)
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            {\Large Funciones}
+            \begin{itemize}
+                \item length(vecN vector)
+                \item distance(vecN p1, vecN p2)
+                \item normalize(vecN vector)
+                \item dot(vecN v1, vecN v2)
+                \item cross(vecN v1, vecN v2)
+            \end{itemize}
+        \end{column}
+        
+    \end{columns}
+
+\end{frame}
+
+\subsection{Matrices}
+\begin{frame}{Matrices}
+    
+    Las matrices \textit{matNxM} y \textit{matN}, formadas por \(N\times M\) y \(N^2\) componentes flotantes, respectivamente. El operador de acceso a las componentes es similar al lenguaje C, del tal forma que: \([j][i]\) accede a la celda de la fila \textit{j-ésima} y columna \textit{i-ésima}.
+    \vfill
+    
+    \begin{columns}[onlytextwidth]
+        \begin{column}{0.45\textwidth}
+            {\Large Constructores}
+            \begin{itemize}
+                \item matNxM(float, \(\cdots\), float)
+                \item matNxM(float, \(\cdots\), float)
+                \item matN(vecN,\(\cdots\), vecN)
+                \item matNxM(vecM,\(\cdots\), vecM)
+                \item matN(matM)
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            {\Large Funciones}
+            \begin{itemize}
+                \item transpose(mat matrix)
+                \item matrix1 * matrix2
+                \item determinant(matN matrix)
+            \end{itemize}
+        \end{column}
+        
+    \end{columns}
+
+\end{frame}
+
+\subsection{Operadores matemáticos}
+\begin{frame}{Operadores matemáticos}
+    
+    Agrupamos \textit{float} y \textit{vecN} con el nombre de \textit{genType} para reunir los tipos de argumentos. Cuando utilizamos un operador sobre el tipo \textit{vecN}, este se aplicará sobre cada una de sus componentes.
+    
+    \vfill
+    
+    \begin{columns}[onlytextwidth]
+        \begin{column}{0.47\textwidth}
+            \begin{itemize}
+                \item radians(genType var)
+                \item sin(genType var)
+                \item tan(genType var)
+                \item asin(genType var)
+                \item atan(genType var)
+                \item pow(genType a, genType b)
+                \item exp(genType var)
+                \item sqrt(genType var)
+                \item sqrt(genType var)
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.47\textwidth}
+            \begin{itemize}
+                \item abs(genType a)
+                \item sign(genType a)
+                \item min(genType a, genType b)
+                \item max(genType a, genType b)
+                \item mix(\\
+                    \tab[0.5cm]genType a,\\
+                    \tab[0.5cm]genType b, \\
+                    \tab[0.5cm](genType ó float ó bool) h \\
+                )
+            \end{itemize}
+        \end{column}
+        
+    \end{columns}
+
+\end{frame}
+
+
+    % \begin{itemize}
+    %     \item
+    %     Bullet lists are marked with a red box.
+    % \end{itemize}
+
+    % \begin{enumerate}
+    %     \item
+    %     \label{enum:item}
+    %     Numbered lists are marked with a white number inside a red box.
+    % \end{enumerate}
+
+    % \begin{description}
+    %     \item[Description] highlights important words with red text.
+    % \end{description}
+
+    % Items in numbered lists like \enumref{enum:item} can be referenced with a red box.
+
+    % \begin{example}
+    %     \begin{itemize}
+    %         \item
+    %         Lists change colour after the environment.
+    %     \end{itemize}
+    % \end{example}

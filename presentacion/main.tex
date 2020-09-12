@@ -1,0 +1,77 @@
+\documentclass[spanish]{beamer}
+
+
+\usetheme{UiB}
+
+
+\usepackage[spanish, es-nodecimaldot]{babel}
+
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+    basicstyle=\tiny,
+    extendedchars=true,
+    inputencoding=utf8,
+	keywordstyle=\bfseries,
+	commentstyle=\color{OliveGreen}\itshape,
+	morekeywords={sage},
+	captionpos=b,
+	language=C,
+	frame=single,
+}
+\renewcommand{\lstlistingname}{Listado}
+
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\usepackage{csquotes}       % Quotation marks
+\usepackage{microtype}      % Improved typography
+\usepackage{amssymb}        % Mathematical symbols
+\usepackage{mathtools}      % Mathematical symbols
+\usepackage[absolute, overlay]{textpos} % Arbitrary placement
+\setlength{\TPHorizModule}{\paperwidth} % Textpos units
+\setlength{\TPVertModule}{\paperheight} % Textpos units
+\usepackage{tikz}
+\usetikzlibrary{overlay-beamer-styles}  % Overlay effects for TikZ
+
+\usepackage[nottoc]{tocbibind}
+
+% Remove first entry
+
+\author{Lukas Häring García}
+\title{Trabajo de fin de grado}
+\subtitle{Funciones de distancia con signo}
+
+
+\begin{document}
+
+    \begin{frame}{Índice General}
+        \tableofcontents
+    \end{frame}
+    
+    
+    % Introduccion
+    \input{secciones/introduccion}
+    
+    % Lenguaje
+    \input{secciones/glsl}
+    
+    % Marcher
+    \input{secciones/marcher}
+    
+    % Modelo de iluminacion
+    \input{secciones/iluminacion}
+    
+    % Funciones de distancia con signo
+    \input{secciones/fds}
+    
+    % Resolución de Artefactos
+    \input{secciones/artefactos}
+    
+    % Materiales
+    \input{secciones/materiales}
+    
+    % Conclusion
+    \input{secciones/conclusiones}
+
+\end{document}
