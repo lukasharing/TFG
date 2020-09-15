@@ -6,6 +6,7 @@
 
 \usepackage[spanish, es-nodecimaldot]{babel}
 
+    \usepackage{url}
 \usepackage{xcolor}
 \usepackage{listings}
 \lstset{
@@ -17,7 +18,6 @@
 	morekeywords={sage},
 	captionpos=b,
 	language=C,
-	frame=single,
 }
 \renewcommand{\lstlistingname}{Listado}
 
@@ -73,5 +73,16 @@
     
     % Conclusion
     \input{secciones/conclusiones}
+
+    \begin{frame}[allowframebreaks]{References}
+        
+        \bibliography{bibliografia.bib}
+    	\bibliographystyle{apalike}
+    	\printbibliography
+        
+        La plantilla utilizada:
+        \url{https://github.com/martinhelso/UiB}
+        
+    \end{frame}
 
 \end{document}

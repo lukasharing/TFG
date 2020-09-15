@@ -1,44 +1,40 @@
 \section{Materiales}
 
-\begin{frame}{Materiales} % [allowframebreaks]
-    % \begin{thebibliography}{}
+\SectionPage
 
-    %     % Article is the default.
-    %     \setbeamertemplate{bibliography item}[book]
+\begin{frame}{Materiales}
 
-    %     \bibitem{Hartshorne1977}
-    %     Hartshorne, R.
-    %     \newblock \emph{Algebraic Geometry}.
-    %     \newblock Springer-Verlag, 1977.
+    Identificaremos cada elemento asignando un entero positivo \(id \in \mathbb{N}\) que será devuelto junto con la distancia a este objeto, es decir, vamos a devolver un \textit{vec2} cuya componente \enquote{x} será la distancia y cuya componente \enquote{y}, el identificador \(id\). Asignaremos la constante \(id=0\) cuando no se ha trazado ningún objeto. Esto hace que \(f\), nuestra escena, esté definida como,
+    \[f:\mathbb{R}^3\longrightarrow\mathbb{R}\times\mathbb{N}\]
+    El pixel resultado, será:
+    \[ \text{color}_{rgb}(id) = \text{obtenerMaterial}(id) \cdot I_{Phong} \]
 
-    %     \setbeamertemplate{bibliography item}[article]
+    También podemos utilizar el punto \(\Vec{p}\) y el identificador \(id\) para calcular la proyección hacia el sistema de coordenadas de alguna textura y tener así una escena más rica.
 
-    %     \bibitem{Helso2020}
-    %     Helsø, M.
-    %     \newblock \enquote{Rational quartic symmetroids}.
-    %     \newblock \emph{Adv. Geom.}, 20(1):71--89, 2020.
+\end{frame}
 
-    %     \setbeamertemplate{bibliography item}[online]
 
-    %     \bibitem{HR2018}
-    %     Helsø, M.\ and Ranestad, K.
-    %     \newblock \emph{Rational quartic spectrahedra}, 2018.
-    %     \newblock \url{https://arxiv.org/abs/1810.11235}
+\begin{frame}{Materiales}
 
-    %     \setbeamertemplate{bibliography item}[triangle]
+    Utilizando la ecuación de la proyección cilíndrica:
+    
+    \[\begin{pmatrix}
+    u&
+    v
+\end{pmatrix}=  0.5\cdot
+\begin{pmatrix}
+    \dfrac{\arctan\left(\dfrac{\Vec{p}_x}{\Vec{p}_z}\right)}{\pi}+1&
+    \Vec{p}_y + 1
+\end{pmatrix}
+\]
+    Se ha creado la siguiente imagen:
+    
+    \vfill
+    
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=0.5\textwidth]{imagenes/voltorb.png}
+      {\url{https://www.shadertoy.com/view/wsGGWG}}
+    \end{figure}
 
-    %     \bibitem{AM1969}
-    %     Atiyah, M.\ and Macdonald, I.
-    %     \newblock \emph{Introduction to commutative algebra}.
-    %     \newblock Addison-Wesley Publishing Co., Reading, Mass.-London-Don
-    %     Mills, Ont., 1969
-
-    %     \setbeamertemplate{bibliography item}[text]
-
-    %     \bibitem{Artin1966}
-    %     Artin, M.
-    %     \newblock \enquote{On isolated rational singularities of surfaces}.
-    %     \newblock \emph{Amer. J. Math.}, 80(1):129--136, 1966.
-
-    % \end{thebibliography}
 \end{frame}

@@ -78,7 +78,7 @@
 
 \begin{frame}{Modelo de Iluminación de Phong}
 
-    Presentado por Thuong Phong en 1975 como un modelo empírico, resultado de las sumas de las intensidades anteriores, además, utiliza un \textit{homeomorfismo} como factor de brillo para la intensidad especular:
+    Presentado por Thuong Phong en 1975 como un modelo empírico\cite{phong1975illumination}, resultado de las sumas de las intensidades anteriores, además, utiliza un \textit{homeomorfismo} como factor de brillo para la intensidad especular:
     \[h_k:[0,1]\longrightarrow[0,1] , h_k(x)=x^{2^k}\]
     \[I_{Phong}=I_a+\sum_{\Vec{l_i}\in L} \mathrlap{\underbrace{\phantom{\Vec{n}\cdot_{[0, 1]}(\Vec{l_i}-\Vec{p})}}_{\text{Intensidad Difusa}}}\Vec{n}\cdot_{[0, 1]}(\Vec{l_i}-\Vec{p}) + \mathrlap{\underbrace{\phantom{h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)}}_{\text{Intensidad Especular}}}h_k\left(\Vec{ojo}\cdot_{[0, 1]}\left(\left(\Vec{l_i}-\Vec{p}\right) \veebar \Vec{n}\right)\right)\]
     
